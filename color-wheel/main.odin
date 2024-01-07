@@ -117,7 +117,6 @@ main :: proc() {
         event_mask = { .Exposure, .KeyPress },
     }
     w := xlib.XCreateWindow(d, root, 0, 0, 600, 600, 0, vi.depth, .InputOutput, vi.visual, {.CWColormap, .CWEventMask}, &swa)
-    // xlib.XSelectInput(d, w, {.Exposure, .KeyPress})
     xlib.XMapWindow(d, w)
     xlib.XStoreName(d, w, "VERY SIMPLE APPLICATION")
 
@@ -136,7 +135,6 @@ main :: proc() {
             draw_a_quad() // function to draw a quad
             gl.XSwapBuffers(d, w)
 
-            xlib.XFillRectangle(d, w, xlib.XDefaultGC(d, s), 20, 20, 10, 10)
         case .KeyPress:
             gl.XMakeCurrent(d, xlib.None, nil)
             gl.XDestroyContext(d, glc)
