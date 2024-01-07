@@ -7,6 +7,7 @@ import "core:fmt"
 _ :: runtime
 _ :: fmt
 
+
 when !GL_DEBUG {
 	// VERSION_1_0
 	CullFace               :: proc "c" (mode: u32)                                                                                         {        impl_CullFace(mode)                                                                         }
@@ -218,48 +219,47 @@ when !GL_DEBUG {
 	VertexAttribPointer      :: proc "c" (index: u32, size: i32, type: u32, normalized: bool, stride: i32, pointer: uintptr)           {        impl_VertexAttribPointer(index, size, type, normalized, stride, pointer)             }
 
 	// VERSION_2_1
-	UniformMatrix2x3fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32) { impl_UniformMatrix2x3fv(location, count, transpose, value) }
-	UniformMatrix3x2fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32) { impl_UniformMatrix3x2fv(location, count, transpose, value) }
-	UniformMatrix2x4fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32) { impl_UniformMatrix2x4fv(location, count, transpose, value) }
-	UniformMatrix4x2fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32) { impl_UniformMatrix4x2fv(location, count, transpose, value) }
-	UniformMatrix3x4fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32) { impl_UniformMatrix3x4fv(location, count, transpose, value) }
-	UniformMatrix4x3fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32) { impl_UniformMatrix4x3fv(location, count, transpose, value) }
-	// WTF?
-	MatrixMode :: proc "c" (mode: u32) { impl_MatrixMode(mode); }
-    Color3b :: proc "c" (red: i8, green: i8, blue: i8) { impl_Color3b(red, green, blue); }
-    Color3s :: proc "c" (red: i16, green: i16, blue: i16) { impl_Color3s(red, green, blue); }
-    Color3i :: proc "c" (red: i32, green: i32, blue: i32) { impl_Color3i(red, green, blue); }
-    Color3f :: proc "c" (red: f32, green: f32, blue: f32) { impl_Color3f(red, green, blue); }
-    Color3d :: proc "c" (red: f64, green: f64, blue: f64) { impl_Color3d(red, green, blue); }
-    Color3ub :: proc "c" (red: u8, green: u8, blue: u8) { impl_Color3ub(red, green, blue); }
-    Color3us :: proc "c" (red: u16, green: u16, blue: u16) { impl_Color3us(red, green, blue); }
-    Color3ui :: proc "c" (red: u32, green: u32, blue: u32) { impl_Color3ui(red, green, blue); }
-    Color4b :: proc "c" (red: i8, green: i8, blue: i8, alpha: i8) { impl_Color4b(red, green, blue, alpha); }
-    Color4s :: proc "c" (red: i16,  green: i16,  blue: i16,  alpha: i16) { impl_Color4s(red, green, blue, alpha); }
-    Color4i :: proc "c" (red: i32, green: i32, blue: i32, alpha: i32) { impl_Color4i(red, green, blue, alpha); }
-    Color4f :: proc "c" (red: f32, green: f32, blue: f32, alpha: f32) { impl_Color4f(red, green, blue, alpha); }
-    Color4d :: proc "c" (red: f64, green: f64, blue: f64, alpha: f64) { impl_Color4d(red, green, blue, alpha); }
-    Color4ub :: proc "c" (red: u8, green: u8, blue: u8, alpha: u8) { impl_Color4ub(red, green, blue, alpha); }
-    Color4us :: proc "c" (red: u16, green: u16, blue: u16, alpha: u16) { impl_Color4us(red, green, blue, alpha); }
-    Color4ui :: proc "c" (red: u32, green: u32, blue: u32, alpha: u32) { impl_Color4ui(red, green, blue, alpha); }
-    LoadIdentity :: proc "c" () { impl_LoadIdentity(); }
-    Ortho :: proc "c" (left: f64, right: f64, bottom: f64, top: f64, nearVal: f64, farVal: f64) { impl_Ortho(left, right, bottom, top, nearVal, farVal); }
-	Ortho2D :: proc "c" (left: f64, right: f64, bottom: f64, top: f64) { impl_Ortho2D(left, right, bottom, top) }
-    uLookAt :: proc "c" (eyeX: f64, eyeY: f64, eyeZ: f64, centerX: f64, centerY: f64, centerZ: f64, upX: f64, upY: f64, upZ: f64) { impl_uLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ); }
-    Begin :: proc "c" (mode: u32) { impl_Begin(mode); }
-    End :: proc "c" () { impl_End(); }
-    Vertex2s :: proc "c" (x: i16, y: i16) { impl_Vertex2s(x, y); }
-    Vertex2i :: proc "c" (x: i32, y: i32) { impl_Vertex2i(x, y); }
-    Vertex2f :: proc "c" (x: f32, y: f32) { impl_Vertex2f(x, y); }
-    Vertex2d :: proc "c" (x: f64, y: f64) { impl_Vertex2d(x, y); }
-    Vertex3s :: proc "c" (x: i16, y: i16, z: i16) { impl_Vertex3s(x, y, z); }
-    Vertex3i :: proc "c" (x: i32, y: i32, z: i32) { impl_Vertex3i(x, y, z); }
-    Vertex3f :: proc "c" (x: f32, y: f32, z: f32) { impl_Vertex3f(x, y, z); }
-    Vertex3d :: proc "c" (x: f64, y: f64, z: f64) { impl_Vertex3d(x, y, z); }
-    Vertex4s :: proc "c" (x: i16, y: i16, z: i16, w: i16) { impl_Vertex4s(x, y, z, w); }
-    Vertex4i :: proc "c" (x: i32, y: i32, z: i32, w: i32) { impl_Vertex4i(x, y, z, w); }
-    Vertex4f :: proc "c" (x: f32, y: f32, z: f32, w: f32) { impl_Vertex4f(x, y, z, w); }
-    Vertex4d :: proc "c" (x: f64, y: f64, z: f64, w: f64) { impl_Vertex4d(x, y, z, w); }
+	UniformMatrix2x3fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)                                               { impl_UniformMatrix2x3fv(location, count, transpose, value) }
+	UniformMatrix3x2fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)                                               { impl_UniformMatrix3x2fv(location, count, transpose, value) }
+	UniformMatrix2x4fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)                                               { impl_UniformMatrix2x4fv(location, count, transpose, value) }
+	UniformMatrix4x2fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)                                               { impl_UniformMatrix4x2fv(location, count, transpose, value) }
+	UniformMatrix3x4fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)                                               { impl_UniformMatrix3x4fv(location, count, transpose, value) }
+	UniformMatrix4x3fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)                                               { impl_UniformMatrix4x3fv(location, count, transpose, value) }
+	MatrixMode         :: proc "c" (mode: u32)                                                                                               { impl_MatrixMode(mode) }
+	Color3b            :: proc "c" (red: i8, green: i8, blue: i8)                                                                            { impl_Color3b(red, green, blue) }
+	Color3s            :: proc "c" (red: i16, green: i16, blue: i16)                                                                         { impl_Color3s(red, green, blue) }
+	Color3i            :: proc "c" (red: i32, green: i32, blue: i32)                                                                         { impl_Color3i(red, green, blue) }
+	Color3f            :: proc "c" (red: f32, green: f32, blue: f32)                                                                         { impl_Color3f(red, green, blue) }
+	Color3d            :: proc "c" (red: f64, green: f64, blue: f64)                                                                         { impl_Color3d(red, green, blue) }
+	Color3ub           :: proc "c" (red: u8, green: u8, blue: u8)                                                                            { impl_Color3ub(red, green, blue) }
+	Color3us           :: proc "c" (red: u16, green: u16, blue: u16)                                                                         { impl_Color3us(red, green, blue) }
+	Color3ui           :: proc "c" (red: u32, green: u32, blue: u32)                                                                         { impl_Color3ui(red, green, blue) }
+	Color4b            :: proc "c" (red: i8, green: i8, blue: i8, alpha: i8)                                                                 { impl_Color4b(red, green, blue, alpha) }
+	Color4s            :: proc "c" (red: i16,  green: i16,  blue: i16,  alpha: i16)                                                          { impl_Color4s(red, green, blue, alpha) }
+	Color4i            :: proc "c" (red: i32, green: i32, blue: i32, alpha: i32)                                                             { impl_Color4i(red, green, blue, alpha) }
+	Color4f            :: proc "c" (red: f32, green: f32, blue: f32, alpha: f32)                                                             { impl_Color4f(red, green, blue, alpha) }
+	Color4d            :: proc "c" (red: f64, green: f64, blue: f64, alpha: f64)                                                             { impl_Color4d(red, green, blue, alpha) }
+	Color4ub           :: proc "c" (red: u8, green: u8, blue: u8, alpha: u8)                                                                 { impl_Color4ub(red, green, blue, alpha) }
+	Color4us           :: proc "c" (red: u16, green: u16, blue: u16, alpha: u16)                                                             { impl_Color4us(red, green, blue, alpha) }
+	Color4ui           :: proc "c" (red: u32, green: u32, blue: u32, alpha: u32)                                                             { impl_Color4ui(red, green, blue, alpha) }
+	LoadIdentity       :: proc "c" ()                                                                                                        { impl_LoadIdentity() }
+	Ortho              :: proc "c" (left: f64, right: f64, bottom: f64, top: f64, nearVal: f64, farVal: f64)                                 { impl_Ortho(left, right, bottom, top, nearVal, farVal) }
+	Ortho2D            :: proc "c" (left: f64, right: f64, bottom: f64, top: f64)                                                            { impl_Ortho2D(left, right, bottom, top) }
+  uLookAt            :: proc "c" (eyeX: f64, eyeY: f64, eyeZ: f64, centerX: f64, centerY: f64, centerZ: f64, upX: f64, upY: f64, upZ: f64) { impl_uLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ) }
+  Begin              :: proc "c" (mode: u32)                                                                                               { impl_Begin(mode) }
+  End                :: proc "c" ()                                                                                                        { impl_End() }
+  Vertex2s           :: proc "c" (x: i16, y: i16)                                                                                          { impl_Vertex2s(x, y) }
+  Vertex2i           :: proc "c" (x: i32, y: i32)                                                                                          { impl_Vertex2i(x, y) }
+  Vertex2f           :: proc "c" (x: f32, y: f32)                                                                                          { impl_Vertex2f(x, y) }
+  Vertex2d           :: proc "c" (x: f64, y: f64)                                                                                          { impl_Vertex2d(x, y) }
+  Vertex3s           :: proc "c" (x: i16, y: i16, z: i16)                                                                                  { impl_Vertex3s(x, y, z) }
+  Vertex3i           :: proc "c" (x: i32, y: i32, z: i32)                                                                                  { impl_Vertex3i(x, y, z) }
+  Vertex3f           :: proc "c" (x: f32, y: f32, z: f32)                                                                                  { impl_Vertex3f(x, y, z) }
+  Vertex3d           :: proc "c" (x: f64, y: f64, z: f64)                                                                                  { impl_Vertex3d(x, y, z) }
+  Vertex4s           :: proc "c" (x: i16, y: i16, z: i16, w: i16)                                                                          { impl_Vertex4s(x, y, z, w) }
+  Vertex4i           :: proc "c" (x: i32, y: i32, z: i32, w: i32)                                                                          { impl_Vertex4i(x, y, z, w) }
+  Vertex4f           :: proc "c" (x: f32, y: f32, z: f32, w: f32)                                                                          { impl_Vertex4f(x, y, z, w) }
+  Vertex4d           :: proc "c" (x: f64, y: f64, z: f64, w: f64)                                                                          { impl_Vertex4d(x, y, z, w) }
 
 	// VERSION_3_0
 	ColorMaski                          :: proc "c" (index: u32, r: bool, g: bool, b: bool, a: bool)                                                                         {        impl_ColorMaski(index, r, g, b, a)                                                                     }
@@ -1072,41 +1072,41 @@ when !GL_DEBUG {
 	UniformMatrix3x4fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32, loc := #caller_location) { impl_UniformMatrix3x4fv(location, count, transpose, value); debug_helper(loc, 0, location, count, transpose, value) }
 	UniformMatrix4x3fv :: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32, loc := #caller_location) { impl_UniformMatrix4x3fv(location, count, transpose, value); debug_helper(loc, 0, location, count, transpose, value) }
 	// WTF?
-	MatrixMode :: proc "c" (mode: u32, loc := #caller_location) { impl_MatrixMode(mode); debug_helper(loc, 0, mode); }
-    Color3b :: proc "c" (red: i8, green: i8, blue: i8, loc := #caller_location) { impl_Color3b(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color3s :: proc "c" (red: i16,  green: i16,  blue: i16, loc := #caller_location) { impl_Color3s(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color3i :: proc "c" (red: i32, green: i32, blue: i32, loc := #caller_location) { impl_Color3i(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color3f :: proc "c" (red: f32, green: f32, blue: f32, loc := #caller_location) { impl_Color3f(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color3d :: proc "c" (red: f64, green: f64, blue: f64, loc := #caller_location) { impl_Color3d(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color3ub :: proc "c" (red: u8, green: u8, blue: u8, loc := #caller_location) { impl_Color3ub(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color3us :: proc "c" (red: u16, green: u16, blue: u16, loc := #caller_location) { impl_Color3us(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color3ui :: proc "c" (red: u32, green: u32, blue: u32, loc := #caller_location) { impl_Color3ui(red, green, blue); debug_helper(loc, 0, red, green, blue); }
-    Color4b :: proc "c" (red: i8, green: i8, blue: i8, alpha: i8, loc := #caller_location) { impl_Color4b(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    Color4s :: proc "c" (red: i16,  green: i16,  blue: i16,  alpha: i16, loc := #caller_location) { impl_Color4s(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    Color4i :: proc "c" (red: i32, green: i32, blue: i32, alpha: i32, loc := #caller_location) { impl_Color4i(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    Color4f :: proc "c" (red: f32, green: f32, blue: f32, alpha: f32, loc := #caller_location) { impl_Color4f(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    Color4d :: proc "c" (red: f64, green: f64, blue: f64, alpha: f64, loc := #caller_location) { impl_Color4d(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    Color4ub :: proc "c" (red: u8, green: u8, blue: u8, alpha: u8, loc := #caller_location) { impl_Color4ub(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    Color4us :: proc "c" (red: u16, green: u16, blue: u16, alpha: u16, loc := #caller_location) { impl_Color4us(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    Color4ui :: proc "c" (red: u32, green: u32, blue: u32, alpha: u32, loc := #caller_location) { impl_Color4ui(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha); }
-    LoadIdentity :: proc "c" (loc := #caller_location) { impl_LoadIdentity(); debug_helper(loc, 0); }
-    Ortho :: proc "c" (left: f64, right: f64, bottom: f64, top: f64, nearVal: f64, farVal: f64, loc := #caller_location) { impl_Ortho(left, right, bottom, top, nearVal, farVal); debug_helper(loc, 0, left, right, bottom, top, nearVal, farVal); }
-	Ortho2D :: proc "c" (left: f64, right: f64, bottom: f64, top: f64, loc := #caller_location) { impl_Ortho2D(left, right, bottom, top); debug_helper(loc, 0, left, right, bottom, top); }
-    uLookAt :: proc "c" (eyeX: f64, eyeY: f64, eyeZ: f64, centerX: f64, centerY: f64, centerZ: f64, upX: f64, upY: f64, upZ: f64, loc := #caller_location) { impl_uLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ); debug_helper(loc, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ); }
-    Begin :: proc "c" (mode: u32, loc := #caller_location) { impl_Begin(mode); debug_helper(loc, 0, mode); }
-    End :: proc "c" (loc := #caller_location)  { impl_End(); debug_helper(loc, 0); }
-    Vertex2s :: proc "c" (x: i16, y: i16, loc := #caller_location) { impl_Vertex2s(x, y); debug_helper(loc, 0, x, y); }
-    Vertex2i :: proc "c" (x: i32, y: i32, loc := #caller_location) { impl_Vertex2i(x, y); debug_helper(loc, 0, x, y); }
-    Vertex2f :: proc "c" (x: f32, y: f32, loc := #caller_location) { impl_Vertex2f(x, y); debug_helper(loc, 0, x, y); }
-    Vertex2d :: proc "c" (x: f64, y: f64, loc := #caller_location) { impl_Vertex2d(x, y); debug_helper(loc, 0, x, y); }
-    Vertex3s :: proc "c" (x: i16, y: i16, z: i16, loc := #caller_location) { impl_Vertex3s(x, y, z); debug_helper(loc, 0, x, y, z); }
-    Vertex3i :: proc "c" (x: i32, y: i32, z: i32, loc := #caller_location) { impl_Vertex3i(x, y, z); debug_helper(loc, 0, x, y, z); }
-    Vertex3f :: proc "c" (x: f32, y: f32, z: f32, loc := #caller_location) { impl_Vertex3f(x, y, z); debug_helper(loc, 0, x, y, z); }
-    Vertex3d :: proc "c" (x: f64, y: f64, z: f64, loc := #caller_location) { impl_Vertex3d(x, y, z); debug_helper(loc, 0, x, y, z); }
-    Vertex4s :: proc "c" (x: i16, y: i16, z: i16, w: i16, loc := #caller_location) { impl_Vertex4s(x, y, z, w); debug_helper(loc, 0, x, y, z, w); }
-    Vertex4i :: proc "c" (x: i32, y: i32, z: i32, w: i32, loc := #caller_location) { impl_Vertex4i(x, y, z, w); debug_helper(loc, 0, x, y, z, w); }
-    Vertex4f :: proc "c" (x: f32, y: f32, z: f32, w: f32, loc := #caller_location) { impl_Vertex4f(x, y, z, w); debug_helper(loc, 0, x, y, z, w); }
-    Vertex4d :: proc "c" (x: f64, y: f64, z: f64, w: f64, loc := #caller_location) { impl_Vertex4d(x, y, z, w); debug_helper(loc, 0, x, y, z, w); }
+	MatrixMode :: proc "c" (mode: u32, loc := #caller_location) { impl_MatrixMode(mode); debug_helper(loc, 0, mode) }
+	Color3b :: proc "c" (red: i8, green: i8, blue: i8, loc := #caller_location) { impl_Color3b(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color3s :: proc "c" (red: i16,  green: i16,  blue: i16, loc := #caller_location) { impl_Color3s(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color3i :: proc "c" (red: i32, green: i32, blue: i32, loc := #caller_location) { impl_Color3i(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color3f :: proc "c" (red: f32, green: f32, blue: f32, loc := #caller_location) { impl_Color3f(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color3d :: proc "c" (red: f64, green: f64, blue: f64, loc := #caller_location) { impl_Color3d(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color3ub :: proc "c" (red: u8, green: u8, blue: u8, loc := #caller_location) { impl_Color3ub(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color3us :: proc "c" (red: u16, green: u16, blue: u16, loc := #caller_location) { impl_Color3us(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color3ui :: proc "c" (red: u32, green: u32, blue: u32, loc := #caller_location) { impl_Color3ui(red, green, blue); debug_helper(loc, 0, red, green, blue) }
+	Color4b :: proc "c" (red: i8, green: i8, blue: i8, alpha: i8, loc := #caller_location) { impl_Color4b(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	Color4s :: proc "c" (red: i16,  green: i16,  blue: i16,  alpha: i16, loc := #caller_location) { impl_Color4s(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	Color4i :: proc "c" (red: i32, green: i32, blue: i32, alpha: i32, loc := #caller_location) { impl_Color4i(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	Color4f :: proc "c" (red: f32, green: f32, blue: f32, alpha: f32, loc := #caller_location) { impl_Color4f(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	Color4d :: proc "c" (red: f64, green: f64, blue: f64, alpha: f64, loc := #caller_location) { impl_Color4d(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	Color4ub :: proc "c" (red: u8, green: u8, blue: u8, alpha: u8, loc := #caller_location) { impl_Color4ub(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	Color4us :: proc "c" (red: u16, green: u16, blue: u16, alpha: u16, loc := #caller_location) { impl_Color4us(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	Color4ui :: proc "c" (red: u32, green: u32, blue: u32, alpha: u32, loc := #caller_location) { impl_Color4ui(red, green, blue, alpha); debug_helper(loc, 0, red, green, blue, alpha) }
+	LoadIdentity :: proc "c" (loc := #caller_location) { impl_LoadIdentity(); debug_helper(loc, 0) }
+	Ortho :: proc "c" (left: f64, right: f64, bottom: f64, top: f64, nearVal: f64, farVal: f64, loc := #caller_location) { impl_Ortho(left, right, bottom, top, nearVal, farVal); debug_helper(loc, 0, left, right, bottom, top, nearVal, farVal) }
+	Ortho2D :: proc "c" (left: f64, right: f64, bottom: f64, top: f64, loc := #caller_location) { impl_Ortho2D(left, right, bottom, top); debug_helper(loc, 0, left, right, bottom, top) }
+	uLookAt :: proc "c" (eyeX: f64, eyeY: f64, eyeZ: f64, centerX: f64, centerY: f64, centerZ: f64, upX: f64, upY: f64, upZ: f64, loc := #caller_location) { impl_uLookAt(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ); debug_helper(loc, 0, eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ) }
+	Begin :: proc "c" (mode: u32, loc := #caller_location) { impl_Begin(mode); debug_helper(loc, 0, mode) }
+	End :: proc "c" (loc := #caller_location)  { impl_End(); debug_helper(loc, 0) }
+	Vertex2s :: proc "c" (x: i16, y: i16, loc := #caller_location) { impl_Vertex2s(x, y); debug_helper(loc, 0, x, y) }
+	Vertex2i :: proc "c" (x: i32, y: i32, loc := #caller_location) { impl_Vertex2i(x, y); debug_helper(loc, 0, x, y) }
+	Vertex2f :: proc "c" (x: f32, y: f32, loc := #caller_location) { impl_Vertex2f(x, y); debug_helper(loc, 0, x, y) }
+	Vertex2d :: proc "c" (x: f64, y: f64, loc := #caller_location) { impl_Vertex2d(x, y); debug_helper(loc, 0, x, y) }
+	Vertex3s :: proc "c" (x: i16, y: i16, z: i16, loc := #caller_location) { impl_Vertex3s(x, y, z); debug_helper(loc, 0, x, y, z) }
+	Vertex3i :: proc "c" (x: i32, y: i32, z: i32, loc := #caller_location) { impl_Vertex3i(x, y, z); debug_helper(loc, 0, x, y, z) }
+	Vertex3f :: proc "c" (x: f32, y: f32, z: f32, loc := #caller_location) { impl_Vertex3f(x, y, z); debug_helper(loc, 0, x, y, z) }
+	Vertex3d :: proc "c" (x: f64, y: f64, z: f64, loc := #caller_location) { impl_Vertex3d(x, y, z); debug_helper(loc, 0, x, y, z) }
+	Vertex4s :: proc "c" (x: i16, y: i16, z: i16, w: i16, loc := #caller_location) { impl_Vertex4s(x, y, z, w); debug_helper(loc, 0, x, y, z, w) }
+	Vertex4i :: proc "c" (x: i32, y: i32, z: i32, w: i32, loc := #caller_location) { impl_Vertex4i(x, y, z, w); debug_helper(loc, 0, x, y, z, w) }
+	Vertex4f :: proc "c" (x: f32, y: f32, z: f32, w: f32, loc := #caller_location) { impl_Vertex4f(x, y, z, w); debug_helper(loc, 0, x, y, z, w) }
+	Vertex4d :: proc "c" (x: f64, y: f64, z: f64, w: f64, loc := #caller_location) { impl_Vertex4d(x, y, z, w); debug_helper(loc, 0, x, y, z, w) }
 
 
 		// VERSION_3_0

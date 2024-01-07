@@ -258,6 +258,9 @@ load_1_4 :: proc(set_proc_address: Set_Proc_Address_Type) {
 	set_proc_address(&impl_PointParameteriv,  "glPointParameteriv")
 	set_proc_address(&impl_BlendColor,        "glBlendColor")
 	set_proc_address(&impl_BlendEquation,     "glBlendEquation")
+	when ODIN_OS == .Linux {
+		set_proc_address(&impl_XCreateContextAttribsARB, "glXCreateContextAttribsARB")
+	}
 }
 
 
@@ -504,42 +507,41 @@ impl_UniformMatrix2x4fv: proc "c" (location: i32, count: i32, transpose: bool, v
 impl_UniformMatrix4x2fv: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)
 impl_UniformMatrix3x4fv: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)
 impl_UniformMatrix4x3fv: proc "c" (location: i32, count: i32, transpose: bool, value: [^]f32)
-// WTF?
-impl_MatrixMode: proc "c" (mode: u32);
-impl_Color3b: proc "c" (red: i8, green: i8, blue: i8);
-impl_Color3s: proc "c" (red: i16,  green: i16,  blue: i16);
-impl_Color3i: proc "c" (red: i32, green: i32, blue: i32);
-impl_Color3f: proc "c" (red: f32, green: f32, blue: f32);
-impl_Color3d: proc "c" (red: f64, green: f64, blue: f64);
-impl_Color3ub: proc "c" (red: u8, green: u8, blue: u8);
-impl_Color3us: proc "c" (red: u16, green: u16, blue: u16);
-impl_Color3ui: proc "c" (red: u32, green: u32, blue: u32);
-impl_Color4b: proc "c" (red: i8, green: i8, blue: i8, alpha: i8);
-impl_Color4s: proc "c" (red: i16,  green: i16,  blue: i16,  alpha: i16);
-impl_Color4i: proc "c" (red: i32, green: i32, blue: i32, alpha: i32);
-impl_Color4f: proc "c" (red: f32, green: f32, blue: f32, alpha: f32);
-impl_Color4d: proc "c" (red: f64, green: f64, blue: f64, alpha: f64);
-impl_Color4ub: proc "c" (red: u8, green: u8, blue: u8, alpha: u8);
-impl_Color4us: proc "c" (red: u16, green: u16, blue: u16, alpha: u16);
-impl_Color4ui: proc "c" (red: u32, green: u32, blue: u32, alpha: u32);
-impl_LoadIdentity: proc "c" ();
-impl_Ortho: proc "c" (left: f64, right: f64, bottom: f64, top: f64, nearVal: f64, farVal: f64);
-impl_Ortho2D: proc "c" (left: f64, right: f64, bottom: f64, top: f64);
-impl_uLookAt: proc "c" (eyeX: f64, eyeY: f64, eyeZ: f64, centerX: f64, centerY: f64, centerZ: f64, upX: f64, upY: f64, upZ: f64);
-impl_Begin: proc "c" (mode: u32);
-impl_End: proc "c" ();
-impl_Vertex2s: proc "c" (x: i16, y: i16);
-impl_Vertex2i: proc "c" (x: i32, y: i32);
-impl_Vertex2f: proc "c" (x: f32, y: f32);
-impl_Vertex2d: proc "c" (x: f64, y: f64);
-impl_Vertex3s: proc "c" (x: i16, y: i16, z: i16);
-impl_Vertex3i: proc "c" (x: i32, y: i32, z: i32);
-impl_Vertex3f: proc "c" (x: f32, y: f32, z: f32);
-impl_Vertex3d: proc "c" (x: f64, y: f64, z: f64);
-impl_Vertex4s: proc "c" (x: i16, y: i16, z: i16, w: i16);
-impl_Vertex4i: proc "c" (x: i32, y: i32, z: i32, w: i32);
-impl_Vertex4f: proc "c" (x: f32, y: f32, z: f32, w: f32);
-impl_Vertex4d: proc "c" (x: f64, y: f64, z: f64, w: f64);
+impl_MatrixMode: proc "c" (mode: u32)
+impl_Color3b: proc "c" (red: i8, green: i8, blue: i8)
+impl_Color3s: proc "c" (red: i16,  green: i16,  blue: i16)
+impl_Color3i: proc "c" (red: i32, green: i32, blue: i32)
+impl_Color3f: proc "c" (red: f32, green: f32, blue: f32)
+impl_Color3d: proc "c" (red: f64, green: f64, blue: f64)
+impl_Color3ub: proc "c" (red: u8, green: u8, blue: u8)
+impl_Color3us: proc "c" (red: u16, green: u16, blue: u16)
+impl_Color3ui: proc "c" (red: u32, green: u32, blue: u32)
+impl_Color4b: proc "c" (red: i8, green: i8, blue: i8, alpha: i8)
+impl_Color4s: proc "c" (red: i16,  green: i16,  blue: i16,  alpha: i16)
+impl_Color4i: proc "c" (red: i32, green: i32, blue: i32, alpha: i32)
+impl_Color4f: proc "c" (red: f32, green: f32, blue: f32, alpha: f32)
+impl_Color4d: proc "c" (red: f64, green: f64, blue: f64, alpha: f64)
+impl_Color4ub: proc "c" (red: u8, green: u8, blue: u8, alpha: u8)
+impl_Color4us: proc "c" (red: u16, green: u16, blue: u16, alpha: u16)
+impl_Color4ui: proc "c" (red: u32, green: u32, blue: u32, alpha: u32)
+impl_LoadIdentity: proc "c" ()
+impl_Ortho: proc "c" (left: f64, right: f64, bottom: f64, top: f64, nearVal: f64, farVal: f64)
+impl_Ortho2D: proc "c" (left: f64, right: f64, bottom: f64, top: f64)
+impl_uLookAt: proc "c" (eyeX: f64, eyeY: f64, eyeZ: f64, centerX: f64, centerY: f64, centerZ: f64, upX: f64, upY: f64, upZ: f64)
+impl_Begin: proc "c" (mode: u32)
+impl_End: proc "c" ()
+impl_Vertex2s: proc "c" (x: i16, y: i16)
+impl_Vertex2i: proc "c" (x: i32, y: i32)
+impl_Vertex2f: proc "c" (x: f32, y: f32)
+impl_Vertex2d: proc "c" (x: f64, y: f64)
+impl_Vertex3s: proc "c" (x: i16, y: i16, z: i16)
+impl_Vertex3i: proc "c" (x: i32, y: i32, z: i32)
+impl_Vertex3f: proc "c" (x: f32, y: f32, z: f32)
+impl_Vertex3d: proc "c" (x: f64, y: f64, z: f64)
+impl_Vertex4s: proc "c" (x: i16, y: i16, z: i16, w: i16)
+impl_Vertex4i: proc "c" (x: i32, y: i32, z: i32, w: i32)
+impl_Vertex4f: proc "c" (x: f32, y: f32, z: f32, w: f32)
+impl_Vertex4d: proc "c" (x: f64, y: f64, z: f64, w: f64)
 
 load_2_1 :: proc(set_proc_address: Set_Proc_Address_Type) {
 	set_proc_address(&impl_UniformMatrix2x3fv, "glUniformMatrix2x3fv")
@@ -548,41 +550,51 @@ load_2_1 :: proc(set_proc_address: Set_Proc_Address_Type) {
 	set_proc_address(&impl_UniformMatrix4x2fv, "glUniformMatrix4x2fv")
 	set_proc_address(&impl_UniformMatrix3x4fv, "glUniformMatrix3x4fv")
 	set_proc_address(&impl_UniformMatrix4x3fv, "glUniformMatrix4x3fv")
-    set_proc_address(&impl_MatrixMode, "glMatrixMode")
-    set_proc_address(&impl_Color3b, "glColor3b")
-    set_proc_address(&impl_Color3s, "glColor3s")
-    set_proc_address(&impl_Color3i, "glColor3i")
-    set_proc_address(&impl_Color3f, "glColor3f")
-    set_proc_address(&impl_Color3d, "glColor3d")
-    set_proc_address(&impl_Color3ub, "glColor3ub")
-    set_proc_address(&impl_Color3us, "glColor3us")
-    set_proc_address(&impl_Color3ui, "glColor3ui")
-    set_proc_address(&impl_Color4b, "glColor4b")
-    set_proc_address(&impl_Color4s, "glColor4s")
-    set_proc_address(&impl_Color4i, "glColor4i")
-    set_proc_address(&impl_Color4f, "glColor4f")
-    set_proc_address(&impl_Color4d, "glColor4d")
-    set_proc_address(&impl_Color4ub, "glColor4ub")
-    set_proc_address(&impl_Color4us, "glColor4us")
-    set_proc_address(&impl_Color4ui, "glColor4ui")
-    set_proc_address(&impl_LoadIdentity, "glLoadIdentity")
-    set_proc_address(&impl_Ortho, "glOrtho")
-    set_proc_address(&impl_Ortho2D, "gluOrtho2D")
-    set_proc_address(&impl_uLookAt, "gluLookAt")
-    set_proc_address(&impl_Begin, "glBegin")
-    set_proc_address(&impl_End, "glEnd")
-    set_proc_address(&impl_Vertex2s, "glVertex2s")
-    set_proc_address(&impl_Vertex2i, "glVertex2i")
-    set_proc_address(&impl_Vertex2f, "glVertex2f")
-    set_proc_address(&impl_Vertex2d, "glVertex2d")
-    set_proc_address(&impl_Vertex3s, "glVertex3s")
-    set_proc_address(&impl_Vertex3i, "glVertex3i")
-    set_proc_address(&impl_Vertex3f, "glVertex3f")
-    set_proc_address(&impl_Vertex3d, "glVertex3d")
-    set_proc_address(&impl_Vertex4s, "glVertex4s")
-    set_proc_address(&impl_Vertex4i, "glVertex4i")
-    set_proc_address(&impl_Vertex4f, "glVertex4f")
-    set_proc_address(&impl_Vertex4d, "glVertex4d")
+	set_proc_address(&impl_MatrixMode, "glMatrixMode")
+	set_proc_address(&impl_Color3b, "glColor3b")
+	set_proc_address(&impl_Color3s, "glColor3s")
+	set_proc_address(&impl_Color3i, "glColor3i")
+	set_proc_address(&impl_Color3f, "glColor3f")
+	set_proc_address(&impl_Color3d, "glColor3d")
+	set_proc_address(&impl_Color3ub, "glColor3ub")
+	set_proc_address(&impl_Color3us, "glColor3us")
+	set_proc_address(&impl_Color3ui, "glColor3ui")
+	set_proc_address(&impl_Color4b, "glColor4b")
+	set_proc_address(&impl_Color4s, "glColor4s")
+	set_proc_address(&impl_Color4i, "glColor4i")
+	set_proc_address(&impl_Color4f, "glColor4f")
+	set_proc_address(&impl_Color4d, "glColor4d")
+	set_proc_address(&impl_Color4ub, "glColor4ub")
+	set_proc_address(&impl_Color4us, "glColor4us")
+	set_proc_address(&impl_Color4ui, "glColor4ui")
+	set_proc_address(&impl_LoadIdentity, "glLoadIdentity")
+	set_proc_address(&impl_Ortho, "glOrtho")
+	set_proc_address(&impl_Ortho2D, "gluOrtho2D")
+	set_proc_address(&impl_uLookAt, "gluLookAt")
+	set_proc_address(&impl_Begin, "glBegin")
+	set_proc_address(&impl_End, "glEnd")
+	set_proc_address(&impl_Vertex2s, "glVertex2s")
+	set_proc_address(&impl_Vertex2i, "glVertex2i")
+	set_proc_address(&impl_Vertex2f, "glVertex2f")
+	set_proc_address(&impl_Vertex2d, "glVertex2d")
+	set_proc_address(&impl_Vertex3s, "glVertex3s")
+	set_proc_address(&impl_Vertex3i, "glVertex3i")
+	set_proc_address(&impl_Vertex3f, "glVertex3f")
+	set_proc_address(&impl_Vertex3d, "glVertex3d")
+	set_proc_address(&impl_Vertex4s, "glVertex4s")
+	set_proc_address(&impl_Vertex4i, "glVertex4i")
+	set_proc_address(&impl_Vertex4f, "glVertex4f")
+	set_proc_address(&impl_Vertex4d, "glVertex4d")
+	when ODIN_OS == .Linux {
+		set_proc_address(&impl_XChooseVisual, "glXChooseVisual")
+		set_proc_address(&impl_XCreateContext, "glXCreateContext")
+		set_proc_address(&impl_XMakeCurrent, "glXMakeCurrent")
+		set_proc_address(&impl_XSwapBuffers, "glXSwapBuffers")
+		set_proc_address(&impl_XDestroyContext, "glXDestroyContext")
+		set_proc_address(&impl_XChooseFBConfig, "glXChooseFBConfig")
+		set_proc_address(&impl_XGetVisualFromFBConfig, "glXGetVisualFromFBConfig")
+		set_proc_address(&impl_XGetFBConfigAttrib, "glXGetFBConfigAttrib")
+	}
 }
 
 

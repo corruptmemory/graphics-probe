@@ -79,15 +79,14 @@ trap cleanup EXIT
 cd "$script_dir"
 
 function usage() {
-  echo "Usage: build.sh [-h|--help] [-c|--clean] [-C|--clean-all]"
-  echo "                [-b|--build]"
+  echo "Usage: build.sh [-h|--help] [-c|--clean] [-b|--build]"
   echo
   echo '    Build some graphics programming experiments.'
   echo
   echo "Arguments:"
   echo "  -h|--help               This help text"
   echo '  -c|--clean              Clean generated artifacts.'
-  echo "  -b|--build              Build 'darth-management' using local tooling"
+  echo "  -b|--build              Build programs"
 }
 
 clean=0
@@ -126,7 +125,5 @@ fi
 
 if [ "$build" = true ]; then
     echo "Building..."
-    set -x
-    ~/projects/Odin/odin build color-wheel -debug -define:GL_DEBUG=false -collection:extra=/home/jim/projects/graphics-probe/extra
-    set +x
+    ~/projects/Odin/odin build color-wheel -strict-style -vet -debug -define:GL_DEBUG=false -collection:extra=/home/jim/projects/graphics-probe/extra
 fi

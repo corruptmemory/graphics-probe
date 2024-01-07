@@ -8,13 +8,11 @@ import "core:os"
 import "core:strings"
 import "vendor:x11/xlib"
 import gl "extra:OpenGL"
-import glx "extra:glx"
 
 glLib: dl.Library
 gluLib: dl.Library
 
 load_sym :: proc(p: rawptr, name: cstring) {
-    // log.debugf("Loading: %s", string(name));
     n := string(name)
     rp: rawptr
     found: bool
@@ -54,14 +52,7 @@ main :: proc() {
     defer dl.unload_library(gluLib)
   
     gl.load_up_to(4, 6, load_sym)
-    glx.load_all_glx(load_sym)
 
-    att := []i32{gl.RGBA, gl.DEPTH, 24, gl.DOUBLEBUFFER, gl.NONE}
-    attribs := []i32{
-        gl.GLX_CONTEXT_MAJOR_VERSION_ARB, 4,
-        gl.GLX_CONTEXT_MINOR_VERSION_ARB, 6,
-        0,
-    }
     visual_attribs := []i32{
       gl.GLX_X_RENDERABLE    , 1,
       gl.GLX_DRAWABLE_TYPE   , gl.GLX_WINDOW_BIT,
@@ -86,8 +77,8 @@ main :: proc() {
     s := xlib.XDefaultScreen(d)
     root := xlib.XDefaultRootWindow(d)
 
-    fbcount: i32;
-    fbc := glx.XChooseFBConfig(d, s, raw_data(visual_attribs), &fbcount)
+    fbcount: i32
+    fbc := gl.XChooseFBConfig(d, s, raw_data(visual_attribs), &fbcount)
     if fbc == nil {
         log.error("Error in XChooseFBConfig")
         return
@@ -99,11 +90,11 @@ main :: proc() {
     best_num_samp : i32 = -1
 
     for fb, i in fbcs {
-        vi1 := glx.XGetVisualFromFBConfig(d, fb)
+        vi1 := gl.XGetVisualFromFBConfig(d, fb)
         if vi1 != nil {
-            samp_buf, samples: i32;
-            glx.XGetFBConfigAttrib(d, fb, gl.GLX_SAMPLE_BUFFERS, &samp_buf)
-            glx.XGetFBConfigAttrib(d, fb, gl.GLX_SAMPLES       , &samples)
+            samp_buf, samples: i32
+            gl.XGetFBConfigAttrib(d, fb, gl.GLX_SAMPLE_BUFFERS, &samp_buf)
+            gl.XGetFBConfigAttrib(d, fb, gl.GLX_SAMPLES       , &samples)
             if best_fbc < 0 || (samp_buf != 0 && samples > best_num_samp) {
                 best_fbc = i32(i)
                 best_num_samp = samples
@@ -114,7 +105,7 @@ main :: proc() {
 
     bestFbc := fbcs[best_fbc]
 
-    vi := glx.XGetVisualFromFBConfig(d, bestFbc)
+    vi := gl.XGetVisualFromFBConfig(d, bestFbc)
     if vi == nil {
         fmt.println("No appropriate visual found")
         return
@@ -123,16 +114,16 @@ main :: proc() {
     cmap := xlib.XCreateColormap(d, root, vi.visual, .AllocNone)
     swa := xlib.XSetWindowAttributes{
         colormap = cmap,
-        event_mask = { .Exposure, .KeyPress }
+        event_mask = { .Exposure, .KeyPress },
     }
     w := xlib.XCreateWindow(d, root, 0, 0, 600, 600, 0, vi.depth, .InputOutput, vi.visual, {.CWColormap, .CWEventMask}, &swa)
     // xlib.XSelectInput(d, w, {.Exposure, .KeyPress})
     xlib.XMapWindow(d, w)
     xlib.XStoreName(d, w, "VERY SIMPLE APPLICATION")
 
-    glc := glx.XCreateContext(d, vi, nil, 1)
+    glc := gl.XCreateContext(d, vi, nil, 1)
     log.debugf("Created context: %p", glc)
-    glx.XMakeCurrent(d, w, glc)
+    gl.XMakeCurrent(d, w, glc)
     gl.Enable(gl.DEPTH_TEST)
     gl.Enable(gl.DEBUG_OUTPUT)
     for {
@@ -143,12 +134,12 @@ main :: proc() {
             xlib.XGetWindowAttributes(d, w, &gwa)
             gl.Viewport(0, 0, gwa.width, gwa.height)
             draw_a_quad() // function to draw a quad
-            glx.XSwapBuffers(d, w)
+            gl.XSwapBuffers(d, w)
 
             xlib.XFillRectangle(d, w, xlib.XDefaultGC(d, s), 20, 20, 10, 10)
         case .KeyPress:
-            glx.XMakeCurrent(d, xlib.None, nil)
-            glx.XDestroyContext(d, glc)
+            gl.XMakeCurrent(d, xlib.None, nil)
+            gl.XDestroyContext(d, glc)
             xlib.XDestroyWindow(d, w)
             return
         }
