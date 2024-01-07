@@ -2,11 +2,12 @@ package main
 
 import "core:fmt"
 import "core:log"
+import "core:mem"
 import dl "core:dynlib"
 import "core:os"
 import "core:strings"
 import "vendor:x11/xlib"
-import gl "vendor:OpenGL"
+import gl "extra:OpenGL"
 import glx "extra:glx"
 
 glLib: dl.Library
@@ -61,6 +62,21 @@ main :: proc() {
         gl.GLX_CONTEXT_MINOR_VERSION_ARB, 6,
         0,
     }
+    visual_attribs := []i32{
+      gl.GLX_X_RENDERABLE    , 1,
+      gl.GLX_DRAWABLE_TYPE   , gl.GLX_WINDOW_BIT,
+      gl.GLX_RENDER_TYPE     , gl.GLX_RGBA_BIT,
+      gl.GLX_X_VISUAL_TYPE   , gl.GLX_TRUE_COLOR,
+      gl.GLX_RED_SIZE        , 8,
+      gl.GLX_GREEN_SIZE      , 8,
+      gl.GLX_BLUE_SIZE       , 8,
+      gl.GLX_ALPHA_SIZE      , 8,
+      gl.GLX_DEPTH_SIZE      , 24,
+      gl.GLX_STENCIL_SIZE    , 8,
+      gl.GLX_DOUBLEBUFFER    , 1,
+      0,
+    }
+
     d := xlib.XOpenDisplay(nil)
     if d == nil {
         fmt.println("Cannot open display")
@@ -69,7 +85,36 @@ main :: proc() {
     defer xlib.XCloseDisplay(d)
     s := xlib.XDefaultScreen(d)
     root := xlib.XDefaultRootWindow(d)
-    vi := glx.XChooseVisual(d, s, raw_data(att))
+
+    fbcount: i32;
+    fbc := glx.XChooseFBConfig(d, s, raw_data(visual_attribs), &fbcount)
+    if fbc == nil {
+        log.error("Error in XChooseFBConfig")
+        return
+    }
+    log.infof("Found %d fbconfigs", fbcount)
+    fbcs := mem.slice_ptr(fbc, int(fbcount))
+
+    best_fbc : i32 = -1
+    best_num_samp : i32 = -1
+
+    for fb, i in fbcs {
+        vi1 := glx.XGetVisualFromFBConfig(d, fb)
+        if vi1 != nil {
+            samp_buf, samples: i32;
+            glx.XGetFBConfigAttrib(d, fb, gl.GLX_SAMPLE_BUFFERS, &samp_buf)
+            glx.XGetFBConfigAttrib(d, fb, gl.GLX_SAMPLES       , &samples)
+            if best_fbc < 0 || (samp_buf != 0 && samples > best_num_samp) {
+                best_fbc = i32(i)
+                best_num_samp = samples
+            }
+        }
+        xlib.XFree(vi1)
+    }
+
+    bestFbc := fbcs[best_fbc]
+
+    vi := glx.XGetVisualFromFBConfig(d, bestFbc)
     if vi == nil {
         fmt.println("No appropriate visual found")
         return
@@ -78,7 +123,7 @@ main :: proc() {
     cmap := xlib.XCreateColormap(d, root, vi.visual, .AllocNone)
     swa := xlib.XSetWindowAttributes{
         colormap = cmap,
-        event_mask = {.Exposure, .KeyPress}
+        event_mask = { .Exposure, .KeyPress }
     }
     w := xlib.XCreateWindow(d, root, 0, 0, 600, 600, 0, vi.depth, .InputOutput, vi.visual, {.CWColormap, .CWEventMask}, &swa)
     // xlib.XSelectInput(d, w, {.Exposure, .KeyPress})
@@ -111,7 +156,6 @@ main :: proc() {
 }
 
 draw_a_quad :: proc() {
-    log.debug("Drawing a quad")
     gl.ClearColor(1.0, 1.0, 1.0, 1.0)
     gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 

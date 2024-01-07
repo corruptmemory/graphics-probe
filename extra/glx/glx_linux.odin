@@ -1,7 +1,7 @@
 package glx
 
 import x "vendor:x11/xlib"
-import gl "vendor:OpenGL"
+import gl "extra:OpenGL"
 
 GLXContext :: ^struct {}
 GLXDrawable :: x.XID

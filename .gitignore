@@ -1,3 +1,4 @@
 *.bin
 ols.json
 *.code-workspace
+*.sublime-*
