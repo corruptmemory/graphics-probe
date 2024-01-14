@@ -2,78 +2,29 @@ package wayland
 
 wl_list :: struct {
   prev: ^wl_list,
-  next: ^wl_list
+  next: ^wl_list,
 }
 
 wl_list_init: proc "c" (list: ^wl_list)
+wl_list_insert: proc "c" (list: ^wl_list, elm: ^wl_list)
+wl_list_remove: proc "c" (elm: ^wl_list)
+wl_list_length: proc "c" (list: ^wl_list) -> int
+wl_list_empty: proc "c" (list: ^wl_list) -> bool
+wl_list_insert_list: proc "c" (list: ^wl_list, other: ^wl_list)
 
-/**
- * Inserts an element into the list, after the element represented by \p list.
- * When \p list is a reference to the list itself (the head), set the containing
- * struct of \p elm as the first element in the list.
- *
- * \note If \p elm is already part of a list, inserting it again will lead to
- *       list corruption.
- *
- * \param list List element after which the new element is inserted
- * \param elm Link of the containing struct to insert into the list
- *
- * \memberof wl_list
- */
-void
-wl_list_insert(struct wl_list *list, struct wl_list *elm);
+wl_container_of :: #force_inline proc(ptr: ^$T, $U: typeid, $M: string) -> ^U {
+    return (^U)(uintptr(ptr)-offset_of_by_string(U, M))
+}
 
-/**
- * Removes an element from the list.
- *
- * \note This operation leaves \p elm in an invalid state.
- *
- * \param elm Link of the containing struct to remove from the list
- *
- * \memberof wl_list
- */
-void
-wl_list_remove(struct wl_list *elm);
+wl_next_container_of :: #force_inline proc(ptr: ^wl_list, $U: typeid, $M: string) -> ^U {
+  if ptr == nil || ptr.next == nil do return nil
+  return wl_container_of(ptr.next,U,M)
+}
 
-/**
- * Determines the length of the list.
- *
- * \note This is an O(n) operation.
- *
- * \param list List whose length is to be determined
- *
- * \return Number of elements in the list
- *
- * \memberof wl_list
- */
-int
-wl_list_length(const struct wl_list *list);
-
-/**
- * Determines if the list is empty.
- *
- * \param list List whose emptiness is to be determined
- *
- * \return 1 if empty, or 0 if not empty
- *
- * \memberof wl_list
- */
-int
-wl_list_empty(const struct wl_list *list);
-
-/**
- * Inserts all of the elements of one list into another, after the element
- * represented by \p list.
- *
- * \note This leaves \p other in an invalid state.
- *
- * \param list List element after which the other list elements will be inserted
- * \param other List of elements to insert
- *
- * \memberof wl_list
- */
-void
-wl_list_insert_list(struct wl_list *list, struct wl_list *other);
+wl_prev_container_of :: #force_inline proc(ptr: ^wl_list, $U: typeid, $M: string) -> ^U {
+  if ptr == nil || ptr.prev == nil do return nil
+  return wl_container_of(ptr.prev,U,M)
+}
 
 /**
  * Retrieves a pointer to a containing struct, given a member name.
@@ -110,9 +61,9 @@ wl_list_insert_list(struct wl_list *list, struct wl_list *other);
  *
  * \return The container for the specified pointer
  */
-#define wl_container_of(ptr, sample, member)        \
-  (__typeof__(sample))((char *)(ptr) -        \
-           offsetof(__typeof__(*sample), member))
+// #define wl_container_of(ptr, sample, member)        \
+//   (__typeof__(sample))((char *)(ptr) -        \
+//            offsetof(__typeof__(*sample), member))
 
 /**
  * Iterates over a list.
@@ -144,10 +95,10 @@ wl_list_insert_list(struct wl_list *list, struct wl_list *other);
  *
  * \relates wl_list
  */
-#define wl_list_for_each(pos, head, member)        \
-  for (pos = wl_container_of((head)->next, pos, member);  \
-       &pos->member != (head);          \
-       pos = wl_container_of(pos->member.next, pos, member))
+// #define wl_list_for_each(pos, head, member)        \
+//   for (pos = wl_container_of((head)->next, pos, member);  \
+//        &pos->member != (head);          \
+//        pos = wl_container_of(pos->member.next, pos, member))
 
 /**
  * Iterates over a list, safe against removal of the list element.
@@ -164,12 +115,12 @@ wl_list_insert_list(struct wl_list *list, struct wl_list *other);
  *
  * \relates wl_list
  */
-#define wl_list_for_each_safe(pos, tmp, head, member)      \
-  for (pos = wl_container_of((head)->next, pos, member),    \
-       tmp = wl_container_of((pos)->member.next, tmp, member);  \
-       &pos->member != (head);          \
-       pos = tmp,              \
-       tmp = wl_container_of(pos->member.next, tmp, member))
+// #define wl_list_for_each_safe(pos, tmp, head, member)      \
+//   for (pos = wl_container_of((head)->next, pos, member),    \
+//        tmp = wl_container_of((pos)->member.next, tmp, member);  \
+//        &pos->member != (head);          \
+//        pos = tmp,              \
+//        tmp = wl_container_of(pos->member.next, tmp, member))
 
 /**
  * Iterates backwards over a list.
@@ -182,10 +133,10 @@ wl_list_insert_list(struct wl_list *list, struct wl_list *other);
  *
  * \relates wl_list
  */
-#define wl_list_for_each_reverse(pos, head, member)      \
-  for (pos = wl_container_of((head)->prev, pos, member);  \
-       &pos->member != (head);          \
-       pos = wl_container_of(pos->member.prev, pos, member))
+// #define wl_list_for_each_reverse(pos, head, member)      \
+//   for (pos = wl_container_of((head)->prev, pos, member);  \
+//        &pos->member != (head);          \
+//        pos = wl_container_of(pos->member.prev, pos, member))
 
 /**
  * Iterates backwards over a list, safe against removal of the list element.
@@ -202,9 +153,9 @@ wl_list_insert_list(struct wl_list *list, struct wl_list *other);
  *
  * \relates wl_list
  */
-#define wl_list_for_each_reverse_safe(pos, tmp, head, member)    \
-  for (pos = wl_container_of((head)->prev, pos, member),  \
-       tmp = wl_container_of((pos)->member.prev, tmp, member);  \
-       &pos->member != (head);          \
-       pos = tmp,              \
-       tmp = wl_container_of(pos->member.prev, tmp, member))
+// #define wl_list_for_each_reverse_safe(pos, tmp, head, member)    \
+//   for (pos = wl_container_of((head)->prev, pos, member),  \
+//        tmp = wl_container_of((pos)->member.prev, tmp, member);  \
+//        &pos->member != (head);          \
+//        pos = tmp,              \
+//        tmp = wl_container_of(pos->member.prev, tmp, member))

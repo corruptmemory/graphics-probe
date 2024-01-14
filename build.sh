@@ -79,7 +79,7 @@ trap cleanup EXIT
 cd "$script_dir"
 
 function usage() {
-  echo "Usage: build.sh [-h|--help] [-c|--clean] [-b|--build]"
+  echo "Usage: build.sh [-h|--help] [-c|--clean] [-b|--build] [-t|--test]"
   echo
   echo '    Build some graphics programming experiments.'
   echo
@@ -87,10 +87,12 @@ function usage() {
   echo "  -h|--help               This help text"
   echo '  -c|--clean              Clean generated artifacts.'
   echo "  -b|--build              Build programs"
+  echo "  -t|--test              Run tests"
 }
 
 clean=0
 build=0
+tst=0
 
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -108,6 +110,10 @@ while [[ $# -gt 0 ]]; do
     build=true
     shift
     ;;
+  -t | --test)
+    tst=true
+    shift
+    ;;
   *)
     echo "ERROR: unknown argument $1"
     echo
@@ -122,6 +128,12 @@ if [ "$clean" = true ]; then
   echo "Regular cleaning..."
 	rm -fr ./color-wheel.vin
 fi
+
+if [ "$tst" = true ]; then
+    echo "Testing..."
+    ~/projects/Odin/odin test tests/extra/Wayland -debug -define:GL_DEBUG=false -collection:extra=/home/jim/projects/graphics-probe/extra
+fi
+
 
 if [ "$build" = true ]; then
     echo "Building..."
