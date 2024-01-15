@@ -62,6 +62,8 @@ list_container :: struct {
 }
 
 
+
+
 @(test)
 test_wl_next_container_of :: proc(t: ^testing.T) {
   container1 := list_container {
@@ -71,14 +73,14 @@ test_wl_next_container_of :: proc(t: ^testing.T) {
     node = 2,
   }
 
-  container1.list.next = &container2.list
-  container2.list.prev = &container1.list
+  wl_list_init(&container1.list)
+  wl_list_insert(&container1.list, &container2.list)
 
   result := wl.wl_next_container_of(&container1.list, list_container, "list")
   result1 := wl.wl_next_container_of(&result.list, list_container, "list")
 
   expect_value(t, result, &container2)
-  expect_value(t, result1, nil)
+  expect_value(t, result1, &container1)
 }
 
 
@@ -91,19 +93,20 @@ test_wl_prev_container_of :: proc(t: ^testing.T) {
     node = 2,
   }
 
-  container1.list.next = &container2.list
-  container2.list.prev = &container1.list
+  wl_list_init(&container1.list)
+  wl_list_insert(&container1.list, &container2.list)
 
   result := wl.wl_prev_container_of(&container2.list, list_container, "list")
   result1 := wl.wl_prev_container_of(&result.list, list_container, "list")
 
   expect_value(t, result, &container1)
-  expect_value(t, result1, nil)
+  expect_value(t, result1, &container2)
 }
 
 
 @(test)
 test_forward_for_of :: proc(t: ^testing.T) {
+  head := list_container{}
   container1 := list_container {
     node = 5,
   }
@@ -111,13 +114,64 @@ test_forward_for_of :: proc(t: ^testing.T) {
     node = 8,
   }
 
-  container1.list.next = &container2.list
-  container2.list.prev = &container1.list
+  wl_list_init(&head.list)
+  wl_list_insert(&head.list, &container1.list)
+  wl_list_insert(&container1.list, &container2.list)
 
   sum: int
-  for c := &container1; c != nil; c = wl.wl_next_container_of(&c.list, list_container, "list") {
+  for c := wl.wl_next_container_of(&head.list, list_container, "list");
+      c != &head;
+      c = wl.wl_next_container_of(&c.list, list_container, "list") {
     sum += c.node
   }
 
   expect_value(t, sum, 13)
+}
+
+@(test)
+test_backward_for_of :: proc(t: ^testing.T) {
+  head := list_container{}
+  container1 := list_container {
+    node = 5,
+  }
+  container2 := list_container {
+    node = 8,
+  }
+
+  wl_list_init(&head.list)
+  wl_list_insert(&head.list, &container1.list)
+  wl_list_insert(&container1.list, &container2.list)
+
+  sum: int
+  for c := wl.wl_prev_container_of(&head.list, list_container, "list");
+      c != &head;
+      c = wl.wl_prev_container_of(&c.list, list_container, "list") {
+    sum += c.node
+  }
+
+  expect_value(t, sum, 13)
+}
+
+
+@private
+wl_list_init :: proc(list: ^wl.wl_list) {
+  list.next = list
+  list.prev = list
+}
+
+@private
+wl_list_insert :: proc(list: ^wl.wl_list, elm: ^wl.wl_list) {
+  // head with no additional elements
+  if list.next == list {
+    elm.prev = list
+    elm.next = list
+    list.next = elm
+    list.prev = elm
+    return
+  }
+  on := list.next
+  list.next = elm
+  elm.next = on
+  elm.prev = list
+  on.prev = elm
 }
