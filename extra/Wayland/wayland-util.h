@@ -613,7 +613,14 @@ typedef int32_t wl_fixed_t;
 static inline double
 wl_fixed_to_double(wl_fixed_t f)
 {
-	return f / 256.0;
+	union {
+		double d;
+		int64_t i;
+	} u;
+
+	u.i = ((1023LL + 44LL) << 52) + (1LL << 51) + f;
+
+	return u.d - (3LL << 43);
 }
 
 /**
@@ -626,7 +633,14 @@ wl_fixed_to_double(wl_fixed_t f)
 static inline wl_fixed_t
 wl_fixed_from_double(double d)
 {
-	return (wl_fixed_t) (d * 256.0);
+	union {
+		double d;
+		int64_t i;
+	} u;
+
+	u.d = d + (3LL << (51 - 8));
+
+	return (wl_fixed_t)u.i;
 }
 
 /**

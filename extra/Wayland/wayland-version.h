@@ -1,7 +1,5 @@
 /*
- * Copyright © 2008-2011 Kristian Høgsberg
- * Copyright © 2011 Intel Corporation
- * Copyright © 2013 Jason Ekstrand
+ * Copyright © 2012 Intel Corporation
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -25,29 +23,12 @@
  * SOFTWARE.
  */
 
-#ifndef WAYLAND_SERVER_PRIVATE_H
-#define WAYLAND_SERVER_PRIVATE_H
+#ifndef WAYLAND_VERSION_H
+#define WAYLAND_VERSION_H
 
-#include "wayland-server-core.h"
-
-struct wl_priv_signal {
-	struct wl_list listener_list;
-	struct wl_list emit_list;
-};
-
-void
-wl_priv_signal_init(struct wl_priv_signal *signal);
-
-void
-wl_priv_signal_add(struct wl_priv_signal *signal, struct wl_listener *listener);
-
-struct wl_listener *
-wl_priv_signal_get(struct wl_priv_signal *signal, wl_notify_func_t notify);
-
-void
-wl_priv_signal_emit(struct wl_priv_signal *signal, void *data);
-
-void
-wl_priv_signal_final_emit(struct wl_priv_signal *signal, void *data);
+#define WAYLAND_VERSION_MAJOR 1
+#define WAYLAND_VERSION_MINOR 22
+#define WAYLAND_VERSION_MICRO 0
+#define WAYLAND_VERSION "1.22.0"
 
 #endif
