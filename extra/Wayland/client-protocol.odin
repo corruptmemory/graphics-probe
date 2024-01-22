@@ -1190,15 +1190,7 @@ wl_shell_surface_set_class :: #force_inline proc "c" (wl_shell_surface: ^wl_shel
        WL_SHELL_SURFACE_SET_CLASS, nil, wl_proxy_get_version((^wl_proxy)(wl_shell_surface)), 0, class_)
 }
 
-#ifndef WL_SURFACE_ERROR_ENUM
-#define WL_SURFACE_ERROR_ENUM
-/**
- * @ingroup iface_wl_surface
- * wl_surface error values
- *
- * These errors can be emitted in response to wl_surface requests.
- */
-enum wl_surface_error {
+wl_surface_error :: enum {
   /**
    * buffer scale value is invalid
    */
@@ -1220,575 +1212,122 @@ enum wl_surface_error {
    */
   WL_SURFACE_ERROR_DEFUNCT_ROLE_OBJECT = 4,
 }
-#endif /* WL_SURFACE_ERROR_ENUM */
 
 /**
  * @ingroup iface_wl_surface
  * @struct wl_surface_listener
  */
-struct wl_surface_listener {
-  /**
-   * surface enters an output
-   *
-   * This is emitted whenever a surface's creation, movement, or
-   * resizing results in some part of it being within the scanout
-   * region of an output.
-   *
-   * Note that a surface may be overlapping with zero or more
-   * outputs.
-   * @param output output entered by the surface
-   */
-  void (*enter)(data: rawptr,
-          struct wl_surface *wl_surface,
-          struct wl_output *output)
-  /**
-   * surface leaves an output
-   *
-   * This is emitted whenever a surface's creation, movement, or
-   * resizing results in it no longer having any part of it within
-   * the scanout region of an output.
-   *
-   * Clients should not use the number of outputs the surface is on
-   * for frame throttling purposes. The surface might be hidden even
-   * if no leave event has been sent, and the compositor might expect
-   * new surface content updates even if no enter event has been
-   * sent. The frame event should be used instead.
-   * @param output output left by the surface
-   */
-  void (*leave)(data: rawptr,
-          struct wl_surface *wl_surface,
-          struct wl_output *output)
-  /**
-   * preferred buffer scale for the surface
-   *
-   * This event indicates the preferred buffer scale for this
-   * surface. It is sent whenever the compositor's preference
-   * changes.
-   *
-   * It is intended that scaling aware clients use this event to
-   * scale their content and use wl_surface.set_buffer_scale to
-   * indicate the scale they have rendered with. This allows clients
-   * to supply a higher detail buffer.
-   * @param factor preferred scaling factor
-   * @since 6
-   */
-  void (*preferred_buffer_scale)(data: rawptr,
-               struct wl_surface *wl_surface,
-               int32_t factor)
-  /**
-   * preferred buffer transform for the surface
-   *
-   * This event indicates the preferred buffer transform for this
-   * surface. It is sent whenever the compositor's preference
-   * changes.
-   *
-   * It is intended that transform aware clients use this event to
-   * apply the transform to their content and use
-   * wl_surface.set_buffer_transform to indicate the transform they
-   * have rendered with.
-   * @param transform preferred transform
-   * @since 6
-   */
-  void (*preferred_buffer_transform)(data: rawptr,
-             struct wl_surface *wl_surface,
-             uint32_t transform)
+wl_surface_listener :: struct {
+  enter: proc "c" (data: rawptr, wl_surface: ^wl_surface, output: ^wl_output),
+  leave: proc "c" (data: rawptr, wl_surface: ^wl_surface, output: ^wl_output),
+  preferred_buffer_scale: proc "c" (data: rawptr, wl_surface: ^wl_surface, factor: i32),
+  preferred_buffer_transform: proc "c" (data: rawptr, wl_surface: ^wl_surface, transform: u32),
 }
 
-/**
- * @ingroup iface_wl_surface
- */
-static inline int
-wl_surface_add_listener :: #force_inline proc "c" (struct wl_surface *wl_surface,
-      const struct wl_surface_listener *listener, data: rawptr)
-{
-  return wl_proxy_add_listener((struct wl_proxy *) wl_surface,
+wl_surface_add_listener :: #force_inline proc "c" (wl_surface: ^wl_surface,
+      listener: ^wl_surface_listener, data: rawptr) -> int {
+  return wl_proxy_add_listener((^wl_proxy)(wl_surface),
              (^^proc())(listener), data)
 }
 
-#define WL_SURFACE_DESTROY 0
-#define WL_SURFACE_ATTACH 1
-#define WL_SURFACE_DAMAGE 2
-#define WL_SURFACE_FRAME 3
-#define WL_SURFACE_SET_OPAQUE_REGION 4
-#define WL_SURFACE_SET_INPUT_REGION 5
-#define WL_SURFACE_COMMIT 6
-#define WL_SURFACE_SET_BUFFER_TRANSFORM 7
-#define WL_SURFACE_SET_BUFFER_SCALE 8
-#define WL_SURFACE_DAMAGE_BUFFER 9
-#define WL_SURFACE_OFFSET 10
+WL_SURFACE_DESTROY :: 0
+WL_SURFACE_ATTACH :: 1
+WL_SURFACE_DAMAGE :: 2
+WL_SURFACE_FRAME :: 3
+WL_SURFACE_SET_OPAQUE_REGION :: 4
+WL_SURFACE_SET_INPUT_REGION :: 5
+WL_SURFACE_COMMIT :: 6
+WL_SURFACE_SET_BUFFER_TRANSFORM :: 7
+WL_SURFACE_SET_BUFFER_SCALE :: 8
+WL_SURFACE_DAMAGE_BUFFER :: 9
+WL_SURFACE_OFFSET :: 10
+WL_SURFACE_ENTER_SINCE_VERSION :: 1
+WL_SURFACE_LEAVE_SINCE_VERSION :: 1
+WL_SURFACE_PREFERRED_BUFFER_SCALE_SINCE_VERSION :: 6
+WL_SURFACE_PREFERRED_BUFFER_TRANSFORM_SINCE_VERSION :: 6
+WL_SURFACE_DESTROY_SINCE_VERSION :: 1
+WL_SURFACE_ATTACH_SINCE_VERSION :: 1
+WL_SURFACE_DAMAGE_SINCE_VERSION :: 1
+WL_SURFACE_FRAME_SINCE_VERSION :: 1
+WL_SURFACE_SET_OPAQUE_REGION_SINCE_VERSION :: 1
+WL_SURFACE_SET_INPUT_REGION_SINCE_VERSION :: 1
+WL_SURFACE_COMMIT_SINCE_VERSION :: 1
+WL_SURFACE_SET_BUFFER_TRANSFORM_SINCE_VERSION :: 2
+WL_SURFACE_SET_BUFFER_SCALE_SINCE_VERSION :: 3
+WL_SURFACE_DAMAGE_BUFFER_SINCE_VERSION :: 4
+WL_SURFACE_OFFSET_SINCE_VERSION :: 5
 
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_ENTER_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_LEAVE_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_PREFERRED_BUFFER_SCALE_SINCE_VERSION 6
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_PREFERRED_BUFFER_TRANSFORM_SINCE_VERSION 6
-
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_DESTROY_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_ATTACH_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_DAMAGE_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_FRAME_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_SET_OPAQUE_REGION_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_SET_INPUT_REGION_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_COMMIT_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_SET_BUFFER_TRANSFORM_SINCE_VERSION 2
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_SET_BUFFER_SCALE_SINCE_VERSION 3
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_DAMAGE_BUFFER_SINCE_VERSION 4
-/**
- * @ingroup iface_wl_surface
- */
-#define WL_SURFACE_OFFSET_SINCE_VERSION 5
-
-/** @ingroup iface_wl_surface */
-
-wl_surface_set_user_data :: #force_inline proc "c" (struct wl_surface *wl_surface, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_surface, user_data)
+wl_surface_set_user_data :: #force_inline proc "c" (wl_surface: ^wl_surface, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_surface), user_data)
 }
 
 /** @ingroup iface_wl_surface */
-wl_surface_get_user_data :: #force_inline proc "c" (struct wl_surface *wl_surface) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_surface)
+wl_surface_get_user_data :: #force_inline proc "c" (wl_surface: ^wl_surface) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_surface))
 }
 
-wl_surface_get_version :: #force_inline proc "c" (struct wl_surface *wl_surface) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_surface)
+wl_surface_get_version :: #force_inline proc "c" (wl_surface: ^wl_surface) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_surface))
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * Deletes the surface and invalidates its object ID.
- */
-
-wl_surface_destroy :: #force_inline proc "c" (struct wl_surface *wl_surface) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_DESTROY, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), WL_MARSHAL_FLAG_DESTROY)
+wl_surface_destroy :: #force_inline proc "c" (wl_surface: ^wl_surface) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_DESTROY, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * Set a buffer as the content of this surface.
- *
- * The new size of the surface is calculated based on the buffer
- * size transformed by the inverse buffer_transform and the
- * inverse buffer_scale. This means that at commit time the supplied
- * buffer size must be an integer multiple of the buffer_scale. If
- * that's not the case, an invalid_size error is sent.
- *
- * The x and y arguments specify the location of the new pending
- * buffer's upper left corner, relative to the current buffer's upper
- * left corner, in surface-local coordinates. In other words, the
- * x and y, combined with the new surface size define in which
- * directions the surface's size changes. Setting anything other than 0
- * as x and y arguments is discouraged, and should instead be replaced
- * with using the separate wl_surface.offset request.
- *
- * When the bound wl_surface version is 5 or higher, passing any
- * non-zero x or y is a protocol violation, and will result in an
- * 'invalid_offset' error being raised. The x and y arguments are ignored
- * and do not change the pending state. To achieve equivalent semantics,
- * use wl_surface.offset.
- *
- * Surface contents are double-buffered state, see wl_surface.commit.
- *
- * The initial surface contents are void; there is no content.
- * wl_surface.attach assigns the given wl_buffer as the pending
- * wl_buffer. wl_surface.commit makes the pending wl_buffer the new
- * surface contents, and the size of the surface becomes the size
- * calculated from the wl_buffer, as described above. After commit,
- * there is no pending buffer until the next attach.
- *
- * Committing a pending wl_buffer allows the compositor to read the
- * pixels in the wl_buffer. The compositor may access the pixels at
- * any time after the wl_surface.commit request. When the compositor
- * will not access the pixels anymore, it will send the
- * wl_buffer.release event. Only after receiving wl_buffer.release,
- * the client may reuse the wl_buffer. A wl_buffer that has been
- * attached and then replaced by another attach instead of committed
- * will not receive a release event, and is not used by the
- * compositor.
- *
- * If a pending wl_buffer has been committed to more than one wl_surface,
- * the delivery of wl_buffer.release events becomes undefined. A well
- * behaved client should not rely on wl_buffer.release events in this
- * case. Alternatively, a client could create multiple wl_buffer objects
- * from the same backing storage or use wp_linux_buffer_release.
- *
- * Destroying the wl_buffer after wl_buffer.release does not change
- * the surface contents. Destroying the wl_buffer before wl_buffer.release
- * is allowed as long as the underlying buffer storage isn't re-used (this
- * can happen e.g. on client process termination). However, if the client
- * destroys the wl_buffer before receiving the wl_buffer.release event and
- * mutates the underlying buffer storage, the surface contents become
- * undefined immediately.
- *
- * If wl_surface.attach is sent with a nil wl_buffer, the
- * following wl_surface.commit will remove the surface content.
- */
-
-wl_surface_attach :: #force_inline proc "c" (struct wl_surface *wl_surface, struct wl_buffer *buffer, int32_t x, int32_t y) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_ATTACH, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, buffer, x, y)
+wl_surface_attach :: #force_inline proc "c" (wl_surface: ^wl_surface, buffer: ^wl_buffer, x: i32, y: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_ATTACH, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, buffer, x, y)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * This request is used to describe the regions where the pending
- * buffer is different from the current surface contents, and where
- * the surface therefore needs to be repainted. The compositor
- * ignores the parts of the damage that fall outside of the surface.
- *
- * Damage is double-buffered state, see wl_surface.commit.
- *
- * The damage rectangle is specified in surface-local coordinates,
- * where x and y specify the upper left corner of the damage rectangle.
- *
- * The initial value for pending damage is empty: no damage.
- * wl_surface.damage adds pending damage: the new pending damage
- * is the union of old pending damage and the given rectangle.
- *
- * wl_surface.commit assigns pending damage as the current damage,
- * and clears pending damage. The server will clear the current
- * damage as it repaints the surface.
- *
- * Note! New clients should not use this request. Instead damage can be
- * posted with wl_surface.damage_buffer which uses buffer coordinates
- * instead of surface coordinates.
- */
-
-wl_surface_damage :: #force_inline proc "c" (struct wl_surface *wl_surface, int32_t x, int32_t y, int32_t width, int32_t height) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_DAMAGE, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, x, y, width, height)
+wl_surface_damage :: #force_inline proc "c" (wl_surface: ^wl_surface, x: i32, y: i32, width: i32, height: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_DAMAGE, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, x, y, width, height)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * Request a notification when it is a good time to start drawing a new
- * frame, by creating a frame callback. This is useful for throttling
- * redrawing operations, and driving animations.
- *
- * When a client is animating on a wl_surface, it can use the 'frame'
- * request to get notified when it is a good time to draw and commit the
- * next frame of animation. If the client commits an update earlier than
- * that, it is likely that some updates will not make it to the display,
- * and the client is wasting resources by drawing too often.
- *
- * The frame request will take effect on the next wl_surface.commit.
- * The notification will only be posted for one frame unless
- * requested again. For a wl_surface, the notifications are posted in
- * the order the frame requests were committed.
- *
- * The server must send the notifications so that a client
- * will not send excessive updates, while still allowing
- * the highest possible update rate for clients that wait for the reply
- * before drawing again. The server should give some time for the client
- * to draw and commit after sending the frame callback events to let it
- * hit the next output refresh.
- *
- * A server should avoid signaling the frame callbacks if the
- * surface is not visible in any way, e.g. the surface is off-screen,
- * or completely obscured by other opaque surfaces.
- *
- * The object returned by this request will be destroyed by the
- * compositor after the callback is fired and as such the client must not
- * attempt to use it after that point.
- *
- * The callback_data passed in the callback is the current time, in
- * milliseconds, with an undefined base.
- */
-static inline struct wl_callback *
-wl_surface_frame :: #force_inline proc "c" (struct wl_surface *wl_surface)
-{
-  struct wl_proxy *callback
+wl_surface_frame :: #force_inline proc "c" (wl_surface: ^wl_surface) -> ^wl_callback {
+  callback := wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_FRAME, &wl_callback_interface, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, nil)
 
-  callback = wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_FRAME, &wl_callback_interface, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, nil)
-
-  return (struct wl_callback *) callback
+  return (^wl_callback)(callback)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * This request sets the region of the surface that contains
- * opaque content.
- *
- * The opaque region is an optimization hint for the compositor
- * that lets it optimize the redrawing of content behind opaque
- * regions.  Setting an opaque region is not required for correct
- * behaviour, but marking transparent content as opaque will result
- * in repaint artifacts.
- *
- * The opaque region is specified in surface-local coordinates.
- *
- * The compositor ignores the parts of the opaque region that fall
- * outside of the surface.
- *
- * Opaque region is double-buffered state, see wl_surface.commit.
- *
- * wl_surface.set_opaque_region changes the pending opaque region.
- * wl_surface.commit copies the pending region to the current region.
- * Otherwise, the pending and current regions are never changed.
- *
- * The initial value for an opaque region is empty. Setting the pending
- * opaque region has copy semantics, and the wl_region object can be
- * destroyed immediately. A nil wl_region causes the pending opaque
- * region to be set to empty.
- */
-
-wl_surface_set_opaque_region :: #force_inline proc "c" (struct wl_surface *wl_surface, struct wl_region *region) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_SET_OPAQUE_REGION, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, region)
+wl_surface_set_opaque_region :: #force_inline proc "c" (wl_surface: ^wl_surface, region: ^wl_region) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_SET_OPAQUE_REGION, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, region)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * This request sets the region of the surface that can receive
- * pointer and touch events.
- *
- * Input events happening outside of this region will try the next
- * surface in the server surface stack. The compositor ignores the
- * parts of the input region that fall outside of the surface.
- *
- * The input region is specified in surface-local coordinates.
- *
- * Input region is double-buffered state, see wl_surface.commit.
- *
- * wl_surface.set_input_region changes the pending input region.
- * wl_surface.commit copies the pending region to the current region.
- * Otherwise the pending and current regions are never changed,
- * except cursor and icon surfaces are special cases, see
- * wl_pointer.set_cursor and wl_data_device.start_drag.
- *
- * The initial value for an input region is infinite. That means the
- * whole surface will accept input. Setting the pending input region
- * has copy semantics, and the wl_region object can be destroyed
- * immediately. A nil wl_region causes the input region to be set
- * to infinite.
- */
-
-wl_surface_set_input_region :: #force_inline proc "c" (struct wl_surface *wl_surface, struct wl_region *region) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_SET_INPUT_REGION, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, region)
+wl_surface_set_input_region :: #force_inline proc "c" (wl_surface: ^wl_surface, region: ^wl_region) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_SET_INPUT_REGION, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, region)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * Surface state (input, opaque, and damage regions, attached buffers,
- * etc.) is double-buffered. Protocol requests modify the pending state,
- * as opposed to the current state in use by the compositor. A commit
- * request atomically applies all pending state, replacing the current
- * state. After commit, the new pending state is as documented for each
- * related request.
- *
- * On commit, a pending wl_buffer is applied first, and all other state
- * second. This means that all coordinates in double-buffered state are
- * relative to the new wl_buffer coming into use, except for
- * wl_surface.attach itself. If there is no pending wl_buffer, the
- * coordinates are relative to the current surface contents.
- *
- * All requests that need a commit to become effective are documented
- * to affect double-buffered state.
- *
- * Other interfaces may add further double-buffered surface state.
- */
-
-wl_surface_commit :: #force_inline proc "c" (struct wl_surface *wl_surface) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_COMMIT, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0)
+wl_surface_commit :: #force_inline proc "c" (wl_surface: ^wl_surface) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_COMMIT, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * This request sets an optional transformation on how the compositor
- * interprets the contents of the buffer attached to the surface. The
- * accepted values for the transform parameter are the values for
- * wl_output.transform.
- *
- * Buffer transform is double-buffered state, see wl_surface.commit.
- *
- * A newly created surface has its buffer transformation set to normal.
- *
- * wl_surface.set_buffer_transform changes the pending buffer
- * transformation. wl_surface.commit copies the pending buffer
- * transformation to the current one. Otherwise, the pending and current
- * values are never changed.
- *
- * The purpose of this request is to allow clients to render content
- * according to the output transform, thus permitting the compositor to
- * use certain optimizations even if the display is rotated. Using
- * hardware overlays and scanning out a client buffer for fullscreen
- * surfaces are examples of such optimizations. Those optimizations are
- * highly dependent on the compositor implementation, so the use of this
- * request should be considered on a case-by-case basis.
- *
- * Note that if the transform value includes 90 or 270 degree rotation,
- * the width of the buffer will become the surface height and the height
- * of the buffer will become the surface width.
- *
- * If transform is not one of the values from the
- * wl_output.transform enum the invalid_transform protocol error
- * is raised.
- */
-
-wl_surface_set_buffer_transform :: #force_inline proc "c" (struct wl_surface *wl_surface, int32_t transform) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_SET_BUFFER_TRANSFORM, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, transform)
+wl_surface_set_buffer_transform :: #force_inline proc "c" (wl_surface: ^wl_surface, transform: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_SET_BUFFER_TRANSFORM, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, transform)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * This request sets an optional scaling factor on how the compositor
- * interprets the contents of the buffer attached to the window.
- *
- * Buffer scale is double-buffered state, see wl_surface.commit.
- *
- * A newly created surface has its buffer scale set to 1.
- *
- * wl_surface.set_buffer_scale changes the pending buffer scale.
- * wl_surface.commit copies the pending buffer scale to the current one.
- * Otherwise, the pending and current values are never changed.
- *
- * The purpose of this request is to allow clients to supply higher
- * resolution buffer data for use on high resolution outputs. It is
- * intended that you pick the same buffer scale as the scale of the
- * output that the surface is displayed on. This means the compositor
- * can avoid scaling when rendering the surface on that output.
- *
- * Note that if the scale is larger than 1, then you have to attach
- * a buffer that is larger (by a factor of scale in each dimension)
- * than the desired surface size.
- *
- * If scale is not positive the invalid_scale protocol error is
- * raised.
- */
-
-wl_surface_set_buffer_scale :: #force_inline proc "c" (struct wl_surface *wl_surface, int32_t scale) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_SET_BUFFER_SCALE, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, scale)
+wl_surface_set_buffer_scale :: #force_inline proc "c" (wl_surface: ^wl_surface, scale: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_SET_BUFFER_SCALE, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, scale)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * This request is used to describe the regions where the pending
- * buffer is different from the current surface contents, and where
- * the surface therefore needs to be repainted. The compositor
- * ignores the parts of the damage that fall outside of the surface.
- *
- * Damage is double-buffered state, see wl_surface.commit.
- *
- * The damage rectangle is specified in buffer coordinates,
- * where x and y specify the upper left corner of the damage rectangle.
- *
- * The initial value for pending damage is empty: no damage.
- * wl_surface.damage_buffer adds pending damage: the new pending
- * damage is the union of old pending damage and the given rectangle.
- *
- * wl_surface.commit assigns pending damage as the current damage,
- * and clears pending damage. The server will clear the current
- * damage as it repaints the surface.
- *
- * This request differs from wl_surface.damage in only one way - it
- * takes damage in buffer coordinates instead of surface-local
- * coordinates. While this generally is more intuitive than surface
- * coordinates, it is especially desirable when using wp_viewport
- * or when a drawing library (like EGL) is unaware of buffer scale
- * and buffer transform.
- *
- * Note: Because buffer transformation changes and damage requests may
- * be interleaved in the protocol stream, it is impossible to determine
- * the actual mapping between surface and buffer damage until
- * wl_surface.commit time. Therefore, compositors wishing to take both
- * kinds of damage into account will have to accumulate damage from the
- * two requests separately and only transform from one to the other
- * after receiving the wl_surface.commit.
- */
-
-wl_surface_damage_buffer :: #force_inline proc "c" (struct wl_surface *wl_surface, int32_t x, int32_t y, int32_t width, int32_t height) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_DAMAGE_BUFFER, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, x, y, width, height)
+wl_surface_damage_buffer :: #force_inline proc "c" (wl_surface: ^wl_surface, x: i32, y: i32, width: i32, height: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_DAMAGE_BUFFER, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, x, y, width, height)
 }
 
-/**
- * @ingroup iface_wl_surface
- *
- * The x and y arguments specify the location of the new pending
- * buffer's upper left corner, relative to the current buffer's upper
- * left corner, in surface-local coordinates. In other words, the
- * x and y, combined with the new surface size define in which
- * directions the surface's size changes.
- *
- * Surface location offset is double-buffered state, see
- * wl_surface.commit.
- *
- * This request is semantically equivalent to and the replaces the x and y
- * arguments in the wl_surface.attach request in wl_surface versions prior
- * to 5. See wl_surface.attach for details.
- */
-
-wl_surface_offset :: #force_inline proc "c" (struct wl_surface *wl_surface, int32_t x, int32_t y) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_surface,
-       WL_SURFACE_OFFSET, nil, wl_proxy_get_version((struct wl_proxy *) wl_surface), 0, x, y)
+wl_surface_offset :: #force_inline proc "c" (wl_surface: ^wl_surface, x: i32, y: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_surface),
+       WL_SURFACE_OFFSET, nil, wl_proxy_get_version((^wl_proxy)(wl_surface)), 0, x, y)
 }
 
-#ifndef WL_SEAT_CAPABILITY_ENUM
-#define WL_SEAT_CAPABILITY_ENUM
-/**
- * @ingroup iface_wl_seat
- * seat capability bitmask
- *
- * This is a bitmask of capabilities this seat has; if a member is
- * set, then it is present on the seat.
- */
-enum wl_seat_capability {
+wl_seat_capability :: enum {
   /**
    * the seat has pointer devices
    */
@@ -1802,90 +1341,17 @@ enum wl_seat_capability {
    */
   WL_SEAT_CAPABILITY_TOUCH = 4,
 }
-#endif /* WL_SEAT_CAPABILITY_ENUM */
 
-#ifndef WL_SEAT_ERROR_ENUM
-#define WL_SEAT_ERROR_ENUM
-/**
- * @ingroup iface_wl_seat
- * wl_seat error values
- *
- * These errors can be emitted in response to wl_seat requests.
- */
-enum wl_seat_error {
+wl_seat_error :: enum {
   /**
    * get_pointer, get_keyboard or get_touch called on seat without the matching capability
    */
   WL_SEAT_ERROR_MISSING_CAPABILITY = 0,
 }
-#endif /* WL_SEAT_ERROR_ENUM */
 
-/**
- * @ingroup iface_wl_seat
- * @struct wl_seat_listener
- */
-struct wl_seat_listener {
-  /**
-   * seat capabilities changed
-   *
-   * This is emitted whenever a seat gains or loses the pointer,
-   * keyboard or touch capabilities. The argument is a capability
-   * enum containing the complete set of capabilities this seat has.
-   *
-   * When the pointer capability is added, a client may create a
-   * wl_pointer object using the wl_seat.get_pointer request. This
-   * object will receive pointer events until the capability is
-   * removed in the future.
-   *
-   * When the pointer capability is removed, a client should destroy
-   * the wl_pointer objects associated with the seat where the
-   * capability was removed, using the wl_pointer.release request. No
-   * further pointer events will be received on these objects.
-   *
-   * In some compositors, if a seat regains the pointer capability
-   * and a client has a previously obtained wl_pointer object of
-   * version 4 or less, that object may start sending pointer events
-   * again. This behavior is considered a misinterpretation of the
-   * intended behavior and must not be relied upon by the client.
-   * wl_pointer objects of version 5 or later must not send events if
-   * created before the most recent event notifying the client of an
-   * added pointer capability.
-   *
-   * The above behavior also applies to wl_keyboard and wl_touch with
-   * the keyboard and touch capabilities, respectively.
-   * @param capabilities capabilities of the seat
-   */
-  void (*capabilities)(data: rawptr,
-           struct wl_seat *wl_seat,
-           uint32_t capabilities)
-  /**
-   * unique identifier for this seat
-   *
-   * In a multi-seat configuration the seat name can be used by
-   * clients to help identify which physical devices the seat
-   * represents.
-   *
-   * The seat name is a UTF-8 string with no convention defined for
-   * its contents. Each name is unique among all wl_seat globals. The
-   * name is only guaranteed to be unique for the current compositor
-   * instance.
-   *
-   * The same seat names are used for all clients. Thus, the name can
-   * be shared across processes to refer to a specific wl_seat
-   * global.
-   *
-   * The name event is sent after binding to the seat global. This
-   * event is only sent once per seat object, and the name does not
-   * change over the lifetime of the wl_seat global.
-   *
-   * Compositors may re-use the same seat name if the wl_seat global
-   * is destroyed and re-created later.
-   * @param name seat identifier
-   * @since 2
-   */
-  void (*name)(data: rawptr,
-         struct wl_seat *wl_seat,
-         const char *name)
+wl_seat_listener :: struct {
+  capabilities: proc "c" (data: rawptr, wl_seat: ^wl_seat, capabilities: u32),
+  name: proc "c" (data: rawptr, wl_seat: ^wl_seat, name: cstring),
 }
 
 /**
