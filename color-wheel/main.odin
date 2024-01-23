@@ -21,12 +21,12 @@ load_sym :: proc(p: rawptr, name: cstring) {
     } else {
       rp, found = dl.symbol_address(glLib, n)
     }
-  
+
     if !found {
       log.errorf("error looking up: %s", n)
     }
     (cast(^rawptr)p)^ = rp
-  }
+}
   
 
 main :: proc() {

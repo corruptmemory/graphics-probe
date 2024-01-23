@@ -27,7 +27,7 @@ wl_fixed_to_double :: #force_inline proc "c" (f: wl_fixed) -> f64 {
     i: i64,
   }
 
-  u.i = ((i64)(1023 + 44) << 52) + (i64)(1 << 51) + f
+  u.i = ((i64)(1023 + 44) << 52) + (i64)(1 << 51) + (i64)(f)
 
   return u.d - (f64)((i64)(3 << 43))
 }
@@ -40,7 +40,7 @@ wl_fixed_from_double :: #force_inline proc "c" (d: f64) -> wl_fixed {
 
   u.d = d + (f64)((i64)(3 << (51 - 8)))
 
-  return (wl_fixed_t)(u.i)
+  return (wl_fixed)(u.i)
 }
 
 wl_fixed_to_int :: #force_inline proc "c" (f: wl_fixed) -> int {

@@ -7,7 +7,6 @@ wl_data_device :: struct {}
 wl_data_device_manager :: struct {}
 wl_data_offer :: struct {}
 wl_data_source :: struct {}
-wl_display :: struct {}
 wl_keyboard :: struct {}
 wl_output :: struct {}
 wl_pointer :: struct {}
@@ -97,8 +96,8 @@ wl_display_get_registry :: #force_inline proc "c" (wl_display: ^wl_display) -> ^
 }
 
 wl_registry_listener :: struct {
-  global: proc "c" (data: rawptr, wl_registry: ^wl_registry, name: u32, interface: cstring, version: u32)
-  global_remove: proc "c" (data: rawptr, wl_registry: ^wl_registry, name: u32)
+  global: proc "c" (data: rawptr, wl_registry: ^wl_registry, name: u32, interface: cstring, version: u32),
+  global_remove: proc "c" (data: rawptr, wl_registry: ^wl_registry, name: u32),
 }
 
 wl_registry_add_listener :: #force_inline proc "c" (wl_registry: ^wl_registry,
@@ -130,7 +129,7 @@ wl_registry_destroy :: #force_inline proc "c" (wl_registry: ^wl_registry) {
 
 wl_registry_bind :: #force_inline proc "c" (wl_registry: ^wl_registry, name: u32, interface: ^wl_interface, version: u32) -> rawptr {
   id := wl_proxy_marshal_flags((^wl_proxy)(wl_registry),
-       WL_REGISTRY_BIND, interface, version, 0, name, interface->name, version, nil)
+       WL_REGISTRY_BIND, interface, version, 0, name, interface.name, version, nil)
 
   return (rawptr)(id)
 }
@@ -877,9 +876,9 @@ wl_data_device_error :: enum {
 
 wl_data_device_listener :: struct {
   data_offer: proc "c" (data: rawptr, wl_data_device: ^wl_data_device, id: ^wl_data_offer),
-  enter: proc "c" (data: rawptr, wl_data_device: ^wl_data_device, serial: u32, surface: ^wl_surface, x: wl_fixed_t, y: wl_fixed_t, id: ^wl_data_offer),
+  enter: proc "c" (data: rawptr, wl_data_device: ^wl_data_device, serial: u32, surface: ^wl_surface, x: wl_fixed, y: wl_fixed, id: ^wl_data_offer),
   leave: proc "c" (data: rawptr, wl_data_device: ^wl_data_device),
-  motion: proc "c" (data: rawptr, wl_data_device: ^wl_data_device, time: u32, x: wl_fixed_t, y: wl_fixed_t),
+  motion: proc "c" (data: rawptr, wl_data_device: ^wl_data_device, time: u32, x: wl_fixed, y: wl_fixed),
   drop: proc "c" (data: rawptr, wl_data_device: ^wl_data_device),
   selection: proc "c" (data: rawptr, wl_data_device: ^wl_data_device, id: ^wl_data_offer),
 }
@@ -982,7 +981,7 @@ wl_data_device_manager_create_data_source :: #force_inline proc "c" (wl_data_dev
   return (^wl_data_source)(id)
 }
 
-wl_data_device_manager_get_data_device :: #force_inline proc "c" (wl_data_device_manager: ^wl_data_device_manager, seat: ^wl_seat) -> ^wl_data_device_manager {
+wl_data_device_manager_get_data_device :: #force_inline proc "c" (wl_data_device_manager: ^wl_data_device_manager, seat: ^wl_seat) -> ^wl_data_device {
   id := wl_proxy_marshal_flags((^wl_proxy)(wl_data_device_manager),
        WL_DATA_DEVICE_MANAGER_GET_DATA_DEVICE, &wl_data_device_interface, wl_proxy_get_version((^wl_proxy)(wl_data_device_manager)), 0, nil, seat)
 
@@ -1022,7 +1021,7 @@ wl_shell_get_shell_surface :: #force_inline proc "c" (wl_shell: ^wl_shell, surfa
   return (^wl_shell_surface)(id)
 }
 
-wl_shell_surface_resize :: enum {
+wl_shell_surface_resize_enum :: enum {
   /**
    * no edge
    */
@@ -1187,7 +1186,7 @@ wl_shell_surface_set_title :: #force_inline proc "c" (wl_shell_surface: ^wl_shel
 
 wl_shell_surface_set_class :: #force_inline proc "c" (wl_shell_surface: ^wl_shell_surface, class: cstring) {
   wl_proxy_marshal_flags((^wl_proxy)(wl_shell_surface),
-       WL_SHELL_SURFACE_SET_CLASS, nil, wl_proxy_get_version((^wl_proxy)(wl_shell_surface)), 0, class_)
+       WL_SHELL_SURFACE_SET_CLASS, nil, wl_proxy_get_version((^wl_proxy)(wl_shell_surface)), 0, class)
 }
 
 wl_surface_error :: enum {
@@ -1390,7 +1389,7 @@ wl_seat_destroy :: #force_inline proc "c" (wl_seat: ^wl_seat) {
   wl_proxy_destroy((^wl_proxy)(wl_seat))
 }
 
-wl_seat_get_pointer :: #force_inline proc "c" (wl_seat: ^wl_seat) -> wl_pointer {
+wl_seat_get_pointer :: #force_inline proc "c" (wl_seat: ^wl_seat) -> ^wl_pointer {
   id := wl_proxy_marshal_flags((^wl_proxy)(wl_seat),
        WL_SEAT_GET_POINTER, &wl_pointer_interface, wl_proxy_get_version((^wl_proxy)(wl_seat)), 0, nil)
 
@@ -1479,11 +1478,11 @@ wl_pointer_axis_relative_direction :: enum {
 }
 
 wl_pointer_listener :: struct {
-  enter: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, serial: u32, surface: ^wl_surface, surface_x: wl_fixed_t, surface_y: wl_fixed_t),
+  enter: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, serial: u32, surface: ^wl_surface, surface_x: wl_fixed, surface_y: wl_fixed),
   leave: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, serial: u32, surface: ^wl_surface),
-  motion: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, surface_x: wl_fixed_t, surface_y: wl_fixed_t),
+  motion: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, surface_x: wl_fixed, surface_y: wl_fixed),
   button: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, serial: u32, time: u32, button: u32, state: u32),
-  axis: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, axis: u32, value: wl_fixed_t),
+  axis: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, axis: u32, value: wl_fixed),
   frame: proc "c" (data: rawptr, wl_pointer: ^wl_pointer),
   axis_source: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, axis_source: u32),
   axis_stop: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, axis: u32),
@@ -1609,17 +1608,17 @@ wl_keyboard_release :: #force_inline proc "c" (wl_keyboard: ^wl_keyboard) {
 }
 
 wl_touch_listener :: struct {
-  down: proc "c" (data: rawptr, wl_touch: ^wl_touch, serial: u32, time: u32, surface: ^wl_surface, id: i32, x: wl_fixed_t, y: wl_fixed_t),
+  down: proc "c" (data: rawptr, wl_touch: ^wl_touch, serial: u32, time: u32, surface: ^wl_surface, id: i32, x: wl_fixed, y: wl_fixed),
   up: proc "c" (data: rawptr, wl_touch: ^wl_touch, serial: u32, time: u32, id: i32),
-  motion: proc "c" (data: rawptr, wl_touch: ^wl_touch, time: u32, id: i32, x: wl_fixed_t, y: wl_fixed_t),
+  motion: proc "c" (data: rawptr, wl_touch: ^wl_touch, time: u32, id: i32, x: wl_fixed, y: wl_fixed),
   frame: proc "c" (data: rawptr, wl_touch: ^wl_touch),
   cancel: proc "c" (data: rawptr, wl_touch: ^wl_touch),
-  shape: proc "c" (data: rawptr, wl_touch: ^wl_touch, id: i32, major: wl_fixed_t, minor: wl_fixed_t),
-  orientation: proc "c" (data: rawptr, wl_touch: ^wl_touch, id: i32, orientation: wl_fixed_t),
+  shape: proc "c" (data: rawptr, wl_touch: ^wl_touch, id: i32, major: wl_fixed, minor: wl_fixed),
+  orientation: proc "c" (data: rawptr, wl_touch: ^wl_touch, id: i32, orientation: wl_fixed),
 }
 
 wl_touch_add_listener :: #force_inline proc "c" (wl_touch: ^wl_touch,
-          listener: wl_touch_listener, data: rawptr) -> int {
+          listener: ^wl_touch_listener, data: rawptr) -> int {
   return wl_proxy_add_listener((^wl_proxy)(wl_touch),
              (^^proc())(listener), data)
 }
@@ -1842,25 +1841,25 @@ WL_SUBCOMPOSITOR_GET_SUBSURFACE :: 1
 WL_SUBCOMPOSITOR_DESTROY_SINCE_VERSION :: 1
 WL_SUBCOMPOSITOR_GET_SUBSURFACE_SINCE_VERSION :: 1
 
-wl_subcompositor_set_user_data :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr, user_data: rawptr) {
+wl_subcompositor_set_user_data :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositor, user_data: rawptr) {
   wl_proxy_set_user_data((^wl_proxy)(wl_subcompositor), user_data)
 }
 
 /** @ingroup iface_wl_subcompositor */
-wl_subcompositor_get_user_data :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr) -> rawptr {
+wl_subcompositor_get_user_data :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositor) -> rawptr {
   return wl_proxy_get_user_data((^wl_proxy)(wl_subcompositor))
 }
 
-wl_subcompositor_get_version :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr) -> u32 {
+wl_subcompositor_get_version :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositor) -> u32 {
   return wl_proxy_get_version((^wl_proxy)(wl_subcompositor))
 }
 
-wl_subcompositor_destroy :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr) {
+wl_subcompositor_destroy :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositor) {
   wl_proxy_marshal_flags((^wl_proxy)(wl_subcompositor),
        WL_SUBCOMPOSITOR_DESTROY, nil, wl_proxy_get_version((^wl_proxy)(wl_subcompositor)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-wl_subcompositor_get_subsurface :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr, surface: ^wl_surface, parent: ^wl_surface) -> ^wl_subsurface {
+wl_subcompositor_get_subsurface :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositor, surface: ^wl_surface, parent: ^wl_surface) -> ^wl_subsurface {
   id := wl_proxy_marshal_flags((^wl_proxy)(wl_subcompositor),
        WL_SUBCOMPOSITOR_GET_SUBSURFACE, &wl_subsurface_interface, wl_proxy_get_version((^wl_proxy)(wl_subcompositor)), 0, nil, surface, parent)
 

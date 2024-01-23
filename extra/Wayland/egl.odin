@@ -3,7 +3,6 @@ package wayland
 WL_EGL_PLATFORM :: 1
 
 wl_egl_window :: struct {}
-wl_surface :: struct {}
 
 wl_egl_window_create: proc "c" (surface: ^wl_surface,
          width: int, height: int) -> ^wl_egl_window

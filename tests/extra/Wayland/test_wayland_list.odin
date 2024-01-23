@@ -1,4 +1,4 @@
-package test_wayland_list
+package test_wayland
 
 import "core:testing"
 import wl "extra:Wayland"

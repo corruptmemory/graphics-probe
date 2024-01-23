@@ -1,8 +1,6 @@
 package wayland
 
 wl_cursor_theme :: struct {}
-wl_buffer :: struct {}
-wl_shm :: struct {}
 
 wl_cursor_image :: struct {
   /** Actual width */
