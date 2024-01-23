@@ -7,7 +7,7 @@ wl_object :: struct {}
 wl_message :: struct {
   name:      cstring,
   signature: cstring,
-  types:     [^]wl_interface,
+  types:     [^]^wl_interface,
 }
 
 wl_interface :: struct  {
@@ -19,15 +19,28 @@ wl_interface :: struct  {
   events: ^wl_message,
 }
 
-
 wl_fixed :: i32
 
 wl_fixed_to_double :: #force_inline proc "c" (f: wl_fixed) -> f64 {
-  return auto_cast(f) / 256.0
+  u: struct #raw_union {
+    d: f64,
+    i: i64,
+  }
+
+  u.i = ((i64)(1023 + 44) << 52) + (i64)(1 << 51) + f
+
+  return u.d - (f64)((i64)(3 << 43))
 }
 
 wl_fixed_from_double :: #force_inline proc "c" (d: f64) -> wl_fixed {
-  return auto_cast(d * 256.0)
+  u: struct #raw_union {
+    d: f64,
+    i: i64,
+  }
+
+  u.d = d + (f64)((i64)(3 << (51 - 8)))
+
+  return (wl_fixed_t)(u.i)
 }
 
 wl_fixed_to_int :: #force_inline proc "c" (f: wl_fixed) -> int {

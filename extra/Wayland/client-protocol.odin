@@ -1357,167 +1357,73 @@ wl_seat_listener :: struct {
 /**
  * @ingroup iface_wl_seat
  */
-static inline int
-wl_seat_add_listener :: #force_inline proc "c" (struct wl_seat *wl_seat,
-         const struct wl_seat_listener *listener, data: rawptr)
-{
-  return wl_proxy_add_listener((struct wl_proxy *) wl_seat,
+wl_seat_add_listener :: #force_inline proc "c" (wl_seat: ^wl_seat,
+         listener: ^wl_seat_listener, data: rawptr) -> int {
+  return wl_proxy_add_listener((^wl_proxy)(wl_seat),
              (^^proc())(listener), data)
 }
 
-#define WL_SEAT_GET_POINTER 0
-#define WL_SEAT_GET_KEYBOARD 1
-#define WL_SEAT_GET_TOUCH 2
-#define WL_SEAT_RELEASE 3
+WL_SEAT_GET_POINTER :: 0
+WL_SEAT_GET_KEYBOARD :: 1
+WL_SEAT_GET_TOUCH :: 2
+WL_SEAT_RELEASE :: 3
+WL_SEAT_CAPABILITIES_SINCE_VERSION :: 1
+WL_SEAT_NAME_SINCE_VERSION :: 2
+WL_SEAT_GET_POINTER_SINCE_VERSION :: 1
+WL_SEAT_GET_KEYBOARD_SINCE_VERSION :: 1
+WL_SEAT_GET_TOUCH_SINCE_VERSION :: 1
+WL_SEAT_RELEASE_SINCE_VERSION :: 5
 
-/**
- * @ingroup iface_wl_seat
- */
-#define WL_SEAT_CAPABILITIES_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_seat
- */
-#define WL_SEAT_NAME_SINCE_VERSION 2
-
-/**
- * @ingroup iface_wl_seat
- */
-#define WL_SEAT_GET_POINTER_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_seat
- */
-#define WL_SEAT_GET_KEYBOARD_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_seat
- */
-#define WL_SEAT_GET_TOUCH_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_seat
- */
-#define WL_SEAT_RELEASE_SINCE_VERSION 5
-
-/** @ingroup iface_wl_seat */
-
-wl_seat_set_user_data :: #force_inline proc "c" (struct wl_seat *wl_seat, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_seat, user_data)
+wl_seat_set_user_data :: #force_inline proc "c" (wl_seat: ^wl_seat, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_seat), user_data)
 }
 
-/** @ingroup iface_wl_seat */
-wl_seat_get_user_data :: #force_inline proc "c" (struct wl_seat *wl_seat) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_seat)
+wl_seat_get_user_data :: #force_inline proc "c" (wl_seat: ^wl_seat) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_seat))
 }
 
-wl_seat_get_version :: #force_inline proc "c" (struct wl_seat *wl_seat) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_seat)
+wl_seat_get_version :: #force_inline proc "c" (wl_seat: ^wl_seat) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_seat))
 }
 
-/** @ingroup iface_wl_seat */
-
-wl_seat_destroy :: #force_inline proc "c" (struct wl_seat *wl_seat) {
-  wl_proxy_destroy((struct wl_proxy *) wl_seat)
+wl_seat_destroy :: #force_inline proc "c" (wl_seat: ^wl_seat) {
+  wl_proxy_destroy((^wl_proxy)(wl_seat))
 }
 
-/**
- * @ingroup iface_wl_seat
- *
- * The ID provided will be initialized to the wl_pointer interface
- * for this seat.
- *
- * This request only takes effect if the seat has the pointer
- * capability, or has had the pointer capability in the past.
- * It is a protocol violation to issue this request on a seat that has
- * never had the pointer capability. The missing_capability error will
- * be sent in this case.
- */
-static inline struct wl_pointer *
-wl_seat_get_pointer :: #force_inline proc "c" (struct wl_seat *wl_seat)
-{
-  struct wl_proxy *id
+wl_seat_get_pointer :: #force_inline proc "c" (wl_seat: ^wl_seat) -> wl_pointer {
+  id := wl_proxy_marshal_flags((^wl_proxy)(wl_seat),
+       WL_SEAT_GET_POINTER, &wl_pointer_interface, wl_proxy_get_version((^wl_proxy)(wl_seat)), 0, nil)
 
-  id = wl_proxy_marshal_flags((struct wl_proxy *) wl_seat,
-       WL_SEAT_GET_POINTER, &wl_pointer_interface, wl_proxy_get_version((struct wl_proxy *) wl_seat), 0, nil)
-
-  return (struct wl_pointer *) id
+  return (^wl_pointer)(id)
 }
 
-/**
- * @ingroup iface_wl_seat
- *
- * The ID provided will be initialized to the wl_keyboard interface
- * for this seat.
- *
- * This request only takes effect if the seat has the keyboard
- * capability, or has had the keyboard capability in the past.
- * It is a protocol violation to issue this request on a seat that has
- * never had the keyboard capability. The missing_capability error will
- * be sent in this case.
- */
-static inline struct wl_keyboard *
-wl_seat_get_keyboard :: #force_inline proc "c" (struct wl_seat *wl_seat)
-{
-  struct wl_proxy *id
+wl_seat_get_keyboard :: #force_inline proc "c" (wl_seat: ^wl_seat) -> ^wl_keyboard  {
+  id := wl_proxy_marshal_flags((^wl_proxy)(wl_seat),
+       WL_SEAT_GET_KEYBOARD, &wl_keyboard_interface, wl_proxy_get_version((^wl_proxy)(wl_seat)), 0, nil)
 
-  id = wl_proxy_marshal_flags((struct wl_proxy *) wl_seat,
-       WL_SEAT_GET_KEYBOARD, &wl_keyboard_interface, wl_proxy_get_version((struct wl_proxy *) wl_seat), 0, nil)
-
-  return (struct wl_keyboard *) id
+  return (^wl_keyboard)(id)
 }
 
-/**
- * @ingroup iface_wl_seat
- *
- * The ID provided will be initialized to the wl_touch interface
- * for this seat.
- *
- * This request only takes effect if the seat has the touch
- * capability, or has had the touch capability in the past.
- * It is a protocol violation to issue this request on a seat that has
- * never had the touch capability. The missing_capability error will
- * be sent in this case.
- */
-static inline struct wl_touch *
-wl_seat_get_touch :: #force_inline proc "c" (struct wl_seat *wl_seat)
-{
-  struct wl_proxy *id
+wl_seat_get_touch :: #force_inline proc "c" (wl_seat: ^wl_seat) -> ^wl_touch {
+  id := wl_proxy_marshal_flags((^wl_proxy)(wl_seat),
+       WL_SEAT_GET_TOUCH, &wl_touch_interface, wl_proxy_get_version((^wl_proxy)(wl_seat)), 0, nil)
 
-  id = wl_proxy_marshal_flags((struct wl_proxy *) wl_seat,
-       WL_SEAT_GET_TOUCH, &wl_touch_interface, wl_proxy_get_version((struct wl_proxy *) wl_seat), 0, nil)
-
-  return (struct wl_touch *) id
+  return (^wl_touch)(id)
 }
 
-/**
- * @ingroup iface_wl_seat
- *
- * Using this request a client can tell the server that it is not going to
- * use the seat object anymore.
- */
-
-wl_seat_release :: #force_inline proc "c" (struct wl_seat *wl_seat) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_seat,
-       WL_SEAT_RELEASE, nil, wl_proxy_get_version((struct wl_proxy *) wl_seat), WL_MARSHAL_FLAG_DESTROY)
+wl_seat_release :: #force_inline proc "c" (wl_seat: ^wl_seat) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_seat),
+       WL_SEAT_RELEASE, nil, wl_proxy_get_version((^wl_proxy)(wl_seat)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-#ifndef WL_POINTER_ERROR_ENUM
-#define WL_POINTER_ERROR_ENUM
-enum wl_pointer_error {
+wl_pointer_error :: enum {
   /**
    * given wl_surface has another role
    */
   WL_POINTER_ERROR_ROLE = 0,
 }
-#endif /* WL_POINTER_ERROR_ENUM */
 
-#ifndef WL_POINTER_BUTTON_STATE_ENUM
-#define WL_POINTER_BUTTON_STATE_ENUM
-/**
- * @ingroup iface_wl_pointer
- * physical button state
- *
- * Describes the physical state of a button that produced the button
- * event.
- */
-enum wl_pointer_button_state {
+wl_pointer_button_state :: enum {
   /**
    * the button is not pressed
    */
@@ -1527,17 +1433,8 @@ enum wl_pointer_button_state {
    */
   WL_POINTER_BUTTON_STATE_PRESSED = 1,
 }
-#endif /* WL_POINTER_BUTTON_STATE_ENUM */
 
-#ifndef WL_POINTER_AXIS_ENUM
-#define WL_POINTER_AXIS_ENUM
-/**
- * @ingroup iface_wl_pointer
- * axis types
- *
- * Describes the axis types of scroll events.
- */
-enum wl_pointer_axis {
+wl_pointer_axis :: enum {
   /**
    * vertical axis
    */
@@ -1547,32 +1444,8 @@ enum wl_pointer_axis {
    */
   WL_POINTER_AXIS_HORIZONTAL_SCROLL = 1,
 }
-#endif /* WL_POINTER_AXIS_ENUM */
 
-#ifndef WL_POINTER_AXIS_SOURCE_ENUM
-#define WL_POINTER_AXIS_SOURCE_ENUM
-/**
- * @ingroup iface_wl_pointer
- * axis source types
- *
- * Describes the source types for axis events. This indicates to the
- * client how an axis event was physically generated; a client may
- * adjust the user interface accordingly. For example, scroll events
- * from a "finger" source may be in a smooth coordinate space with
- * kinetic scrolling whereas a "wheel" source may be in discrete steps
- * of a number of lines.
- *
- * The "continuous" axis source is a device generating events in a
- * continuous coordinate space, but using something other than a
- * finger. One example for this source is button-based scrolling where
- * the vertical motion of a device is converted to scroll events while
- * a button is held down.
- *
- * The "wheel tilt" axis source indicates that the actual device is a
- * wheel but the scroll event is not caused by a rotation but a
- * (usually sideways) tilt of the wheel.
- */
-enum wl_pointer_axis_source {
+wl_pointer_axis_source :: enum {
   /**
    * a physical wheel rotation
    */
@@ -1591,22 +1464,10 @@ enum wl_pointer_axis_source {
    */
   WL_POINTER_AXIS_SOURCE_WHEEL_TILT = 3,
 }
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_AXIS_SOURCE_WHEEL_TILT_SINCE_VERSION 6
-#endif /* WL_POINTER_AXIS_SOURCE_ENUM */
 
-#ifndef WL_POINTER_AXIS_RELATIVE_DIRECTION_ENUM
-#define WL_POINTER_AXIS_RELATIVE_DIRECTION_ENUM
-/**
- * @ingroup iface_wl_pointer
- * axis relative direction
- *
- * This specifies the direction of the physical motion that caused a
- * wl_pointer.axis event, relative to the wl_pointer.axis direction.
- */
-enum wl_pointer_axis_relative_direction {
+WL_POINTER_AXIS_SOURCE_WHEEL_TILT_SINCE_VERSION :: 6
+
+wl_pointer_axis_relative_direction :: enum {
   /**
    * physical motion matches axis direction
    */
@@ -1616,497 +1477,71 @@ enum wl_pointer_axis_relative_direction {
    */
   WL_POINTER_AXIS_RELATIVE_DIRECTION_INVERTED = 1,
 }
-#endif /* WL_POINTER_AXIS_RELATIVE_DIRECTION_ENUM */
 
-/**
- * @ingroup iface_wl_pointer
- * @struct wl_pointer_listener
- */
-struct wl_pointer_listener {
-  /**
-   * enter event
-   *
-   * Notification that this seat's pointer is focused on a certain
-   * surface.
-   *
-   * When a seat's focus enters a surface, the pointer image is
-   * undefined and a client should respond to this event by setting
-   * an appropriate pointer image with the set_cursor request.
-   * @param serial serial number of the enter event
-   * @param surface surface entered by the pointer
-   * @param surface_x surface-local x coordinate
-   * @param surface_y surface-local y coordinate
-   */
-  void (*enter)(data: rawptr,
-          struct wl_pointer *wl_pointer,
-          uint32_t serial,
-          struct wl_surface *surface,
-          wl_fixed_t surface_x,
-          wl_fixed_t surface_y)
-  /**
-   * leave event
-   *
-   * Notification that this seat's pointer is no longer focused on
-   * a certain surface.
-   *
-   * The leave notification is sent before the enter notification for
-   * the new focus.
-   * @param serial serial number of the leave event
-   * @param surface surface left by the pointer
-   */
-  void (*leave)(data: rawptr,
-          struct wl_pointer *wl_pointer,
-          uint32_t serial,
-          struct wl_surface *surface)
-  /**
-   * pointer motion event
-   *
-   * Notification of pointer location change. The arguments
-   * surface_x and surface_y are the location relative to the focused
-   * surface.
-   * @param time timestamp with millisecond granularity
-   * @param surface_x surface-local x coordinate
-   * @param surface_y surface-local y coordinate
-   */
-  void (*motion)(data: rawptr,
-           struct wl_pointer *wl_pointer,
-           uint32_t time,
-           wl_fixed_t surface_x,
-           wl_fixed_t surface_y)
-  /**
-   * pointer button event
-   *
-   * Mouse button click and release notifications.
-   *
-   * The location of the click is given by the last motion or enter
-   * event. The time argument is a timestamp with millisecond
-   * granularity, with an undefined base.
-   *
-   * The button is a button code as defined in the Linux kernel's
-   * linux/input-event-codes.h header file, e.g. BTN_LEFT.
-   *
-   * Any 16-bit button code value is reserved for future additions to
-   * the kernel's event code list. All other button codes above
-   * 0xFFFF are currently undefined but may be used in future
-   * versions of this protocol.
-   * @param serial serial number of the button event
-   * @param time timestamp with millisecond granularity
-   * @param button button that produced the event
-   * @param state physical state of the button
-   */
-  void (*button)(data: rawptr,
-           struct wl_pointer *wl_pointer,
-           uint32_t serial,
-           uint32_t time,
-           uint32_t button,
-           uint32_t state)
-  /**
-   * axis event
-   *
-   * Scroll and other axis notifications.
-   *
-   * For scroll events (vertical and horizontal scroll axes), the
-   * value parameter is the length of a vector along the specified
-   * axis in a coordinate space identical to those of motion events,
-   * representing a relative movement along the specified axis.
-   *
-   * For devices that support movements non-parallel to axes multiple
-   * axis events will be emitted.
-   *
-   * When applicable, for example for touch pads, the server can
-   * choose to emit scroll events where the motion vector is
-   * equivalent to a motion event vector.
-   *
-   * When applicable, a client can transform its content relative to
-   * the scroll distance.
-   * @param time timestamp with millisecond granularity
-   * @param axis axis type
-   * @param value length of vector in surface-local coordinate space
-   */
-  void (*axis)(data: rawptr,
-         struct wl_pointer *wl_pointer,
-         uint32_t time,
-         uint32_t axis,
-         wl_fixed_t value)
-  /**
-   * end of a pointer event sequence
-   *
-   * Indicates the end of a set of events that logically belong
-   * together. A client is expected to accumulate the data in all
-   * events within the frame before proceeding.
-   *
-   * All wl_pointer events before a wl_pointer.frame event belong
-   * logically together. For example, in a diagonal scroll motion the
-   * compositor will send an optional wl_pointer.axis_source event,
-   * two wl_pointer.axis events (horizontal and vertical) and finally
-   * a wl_pointer.frame event. The client may use this information to
-   * calculate a diagonal vector for scrolling.
-   *
-   * When multiple wl_pointer.axis events occur within the same
-   * frame, the motion vector is the combined motion of all events.
-   * When a wl_pointer.axis and a wl_pointer.axis_stop event occur
-   * within the same frame, this indicates that axis movement in one
-   * axis has stopped but continues in the other axis. When multiple
-   * wl_pointer.axis_stop events occur within the same frame, this
-   * indicates that these axes stopped in the same instance.
-   *
-   * A wl_pointer.frame event is sent for every logical event group,
-   * even if the group only contains a single wl_pointer event.
-   * Specifically, a client may get a sequence: motion, frame,
-   * button, frame, axis, frame, axis_stop, frame.
-   *
-   * The wl_pointer.enter and wl_pointer.leave events are logical
-   * events generated by the compositor and not the hardware. These
-   * events are also grouped by a wl_pointer.frame. When a pointer
-   * moves from one surface to another, a compositor should group the
-   * wl_pointer.leave event within the same wl_pointer.frame.
-   * However, a client must not rely on wl_pointer.leave and
-   * wl_pointer.enter being in the same wl_pointer.frame.
-   * Compositor-specific policies may require the wl_pointer.leave
-   * and wl_pointer.enter event being split across multiple
-   * wl_pointer.frame groups.
-   * @since 5
-   */
-  void (*frame)(data: rawptr,
-          struct wl_pointer *wl_pointer)
-  /**
-   * axis source event
-   *
-   * Source information for scroll and other axes.
-   *
-   * This event does not occur on its own. It is sent before a
-   * wl_pointer.frame event and carries the source information for
-   * all events within that frame.
-   *
-   * The source specifies how this event was generated. If the source
-   * is wl_pointer.axis_source.finger, a wl_pointer.axis_stop event
-   * will be sent when the user lifts the finger off the device.
-   *
-   * If the source is wl_pointer.axis_source.wheel,
-   * wl_pointer.axis_source.wheel_tilt or
-   * wl_pointer.axis_source.continuous, a wl_pointer.axis_stop event
-   * may or may not be sent. Whether a compositor sends an axis_stop
-   * event for these sources is hardware-specific and
-   * implementation-dependent; clients must not rely on receiving an
-   * axis_stop event for these scroll sources and should treat scroll
-   * sequences from these scroll sources as unterminated by default.
-   *
-   * This event is optional. If the source is unknown for a
-   * particular axis event sequence, no event is sent. Only one
-   * wl_pointer.axis_source event is permitted per frame.
-   *
-   * The order of wl_pointer.axis_discrete and wl_pointer.axis_source
-   * is not guaranteed.
-   * @param axis_source source of the axis event
-   * @since 5
-   */
-  void (*axis_source)(data: rawptr,
-          struct wl_pointer *wl_pointer,
-          uint32_t axis_source)
-  /**
-   * axis stop event
-   *
-   * Stop notification for scroll and other axes.
-   *
-   * For some wl_pointer.axis_source types, a wl_pointer.axis_stop
-   * event is sent to notify a client that the axis sequence has
-   * terminated. This enables the client to implement kinetic
-   * scrolling. See the wl_pointer.axis_source documentation for
-   * information on when this event may be generated.
-   *
-   * Any wl_pointer.axis events with the same axis_source after this
-   * event should be considered as the start of a new axis motion.
-   *
-   * The timestamp is to be interpreted identical to the timestamp in
-   * the wl_pointer.axis event. The timestamp value may be the same
-   * as a preceding wl_pointer.axis event.
-   * @param time timestamp with millisecond granularity
-   * @param axis the axis stopped with this event
-   * @since 5
-   */
-  void (*axis_stop)(data: rawptr,
-        struct wl_pointer *wl_pointer,
-        uint32_t time,
-        uint32_t axis)
-  /**
-   * axis click event
-   *
-   * Discrete step information for scroll and other axes.
-   *
-   * This event carries the axis value of the wl_pointer.axis event
-   * in discrete steps (e.g. mouse wheel clicks).
-   *
-   * This event is deprecated with wl_pointer version 8 - this event
-   * is not sent to clients supporting version 8 or later.
-   *
-   * This event does not occur on its own, it is coupled with a
-   * wl_pointer.axis event that represents this axis value on a
-   * continuous scale. The protocol guarantees that each
-   * axis_discrete event is always followed by exactly one axis event
-   * with the same axis number within the same wl_pointer.frame. Note
-   * that the protocol allows for other events to occur between the
-   * axis_discrete and its coupled axis event, including other
-   * axis_discrete or axis events. A wl_pointer.frame must not
-   * contain more than one axis_discrete event per axis type.
-   *
-   * This event is optional; continuous scrolling devices like
-   * two-finger scrolling on touchpads do not have discrete steps and
-   * do not generate this event.
-   *
-   * The discrete value carries the directional information. e.g. a
-   * value of -2 is two steps towards the negative direction of this
-   * axis.
-   *
-   * The axis number is identical to the axis number in the
-   * associated axis event.
-   *
-   * The order of wl_pointer.axis_discrete and wl_pointer.axis_source
-   * is not guaranteed.
-   * @param axis axis type
-   * @param discrete number of steps
-   * @since 5
-   */
-  void (*axis_discrete)(data: rawptr,
-            struct wl_pointer *wl_pointer,
-            uint32_t axis,
-            int32_t discrete)
-  /**
-   * axis high-resolution scroll event
-   *
-   * Discrete high-resolution scroll information.
-   *
-   * This event carries high-resolution wheel scroll information,
-   * with each multiple of 120 representing one logical scroll step
-   * (a wheel detent). For example, an axis_value120 of 30 is one
-   * quarter of a logical scroll step in the positive direction, a
-   * value120 of -240 are two logical scroll steps in the negative
-   * direction within the same hardware event. Clients that rely on
-   * discrete scrolling should accumulate the value120 to multiples
-   * of 120 before processing the event.
-   *
-   * The value120 must not be zero.
-   *
-   * This event replaces the wl_pointer.axis_discrete event in
-   * clients supporting wl_pointer version 8 or later.
-   *
-   * Where a wl_pointer.axis_source event occurs in the same
-   * wl_pointer.frame, the axis source applies to this event.
-   *
-   * The order of wl_pointer.axis_value120 and wl_pointer.axis_source
-   * is not guaranteed.
-   * @param axis axis type
-   * @param value120 scroll distance as fraction of 120
-   * @since 8
-   */
-  void (*axis_value120)(data: rawptr,
-            struct wl_pointer *wl_pointer,
-            uint32_t axis,
-            int32_t value120)
-  /**
-   * axis relative physical direction event
-   *
-   * Relative directional information of the entity causing the
-   * axis motion.
-   *
-   * For a wl_pointer.axis event, the
-   * wl_pointer.axis_relative_direction event specifies the movement
-   * direction of the entity causing the wl_pointer.axis event. For
-   * example: - if a user's fingers on a touchpad move down and this
-   * causes a wl_pointer.axis vertical_scroll down event, the
-   * physical direction is 'identical' - if a user's fingers on a
-   * touchpad move down and this causes a wl_pointer.axis
-   * vertical_scroll up scroll up event ('natural scrolling'), the
-   * physical direction is 'inverted'.
-   *
-   * A client may use this information to adjust scroll motion of
-   * components. Specifically, enabling natural scrolling causes the
-   * content to change direction compared to traditional scrolling.
-   * Some widgets like volume control sliders should usually match
-   * the physical direction regardless of whether natural scrolling
-   * is active. This event enables clients to match the scroll
-   * direction of a widget to the physical direction.
-   *
-   * This event does not occur on its own, it is coupled with a
-   * wl_pointer.axis event that represents this axis value. The
-   * protocol guarantees that each axis_relative_direction event is
-   * always followed by exactly one axis event with the same axis
-   * number within the same wl_pointer.frame. Note that the protocol
-   * allows for other events to occur between the
-   * axis_relative_direction and its coupled axis event.
-   *
-   * The axis number is identical to the axis number in the
-   * associated axis event.
-   *
-   * The order of wl_pointer.axis_relative_direction,
-   * wl_pointer.axis_discrete and wl_pointer.axis_source is not
-   * guaranteed.
-   * @param axis axis type
-   * @param direction physical direction relative to axis motion
-   * @since 9
-   */
-  void (*axis_relative_direction)(data: rawptr,
-          struct wl_pointer *wl_pointer,
-          uint32_t axis,
-          uint32_t direction)
+wl_pointer_listener :: struct {
+  enter: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, serial: u32, surface: ^wl_surface, surface_x: wl_fixed_t, surface_y: wl_fixed_t),
+  leave: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, serial: u32, surface: ^wl_surface),
+  motion: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, surface_x: wl_fixed_t, surface_y: wl_fixed_t),
+  button: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, serial: u32, time: u32, button: u32, state: u32),
+  axis: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, axis: u32, value: wl_fixed_t),
+  frame: proc "c" (data: rawptr, wl_pointer: ^wl_pointer),
+  axis_source: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, axis_source: u32),
+  axis_stop: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, time: u32, axis: u32),
+  axis_discrete: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, axis: u32, discrete: i32),
+  axis_value120: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, axis: u32, value120: i32),
+  axis_relative_direction: proc "c" (data: rawptr, wl_pointer: ^wl_pointer, axis: u32, direction: u32),
 }
 
-/**
- * @ingroup iface_wl_pointer
- */
-static inline int
-wl_pointer_add_listener :: #force_inline proc "c" (struct wl_pointer *wl_pointer,
-      const struct wl_pointer_listener *listener, data: rawptr)
-{
-  return wl_proxy_add_listener((struct wl_proxy *) wl_pointer,
+wl_pointer_add_listener :: #force_inline proc "c" (wl_pointer: ^wl_pointer,
+      listener: ^wl_pointer_listener, data: rawptr) -> int {
+  return wl_proxy_add_listener((^wl_proxy)(wl_pointer),
              (^^proc())(listener), data)
 }
 
-#define WL_POINTER_SET_CURSOR 0
-#define WL_POINTER_RELEASE 1
+WL_POINTER_SET_CURSOR :: 0
+WL_POINTER_RELEASE :: 1
+WL_POINTER_ENTER_SINCE_VERSION :: 1
+WL_POINTER_LEAVE_SINCE_VERSION :: 1
+WL_POINTER_MOTION_SINCE_VERSION :: 1
+WL_POINTER_BUTTON_SINCE_VERSION :: 1
+WL_POINTER_AXIS_SINCE_VERSION :: 1
+WL_POINTER_FRAME_SINCE_VERSION :: 5
+WL_POINTER_AXIS_SOURCE_SINCE_VERSION :: 5
+WL_POINTER_AXIS_STOP_SINCE_VERSION :: 5
+WL_POINTER_AXIS_DISCRETE_SINCE_VERSION :: 5
+WL_POINTER_AXIS_VALUE120_SINCE_VERSION :: 8
+WL_POINTER_AXIS_RELATIVE_DIRECTION_SINCE_VERSION :: 9
+WL_POINTER_SET_CURSOR_SINCE_VERSION :: 1
+WL_POINTER_RELEASE_SINCE_VERSION :: 3
 
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_ENTER_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_LEAVE_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_MOTION_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_BUTTON_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_AXIS_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_FRAME_SINCE_VERSION 5
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_AXIS_SOURCE_SINCE_VERSION 5
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_AXIS_STOP_SINCE_VERSION 5
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_AXIS_DISCRETE_SINCE_VERSION 5
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_AXIS_VALUE120_SINCE_VERSION 8
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_AXIS_RELATIVE_DIRECTION_SINCE_VERSION 9
-
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_SET_CURSOR_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_pointer
- */
-#define WL_POINTER_RELEASE_SINCE_VERSION 3
-
-/** @ingroup iface_wl_pointer */
-
-wl_pointer_set_user_data :: #force_inline proc "c" (struct wl_pointer *wl_pointer, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_pointer, user_data)
+wl_pointer_set_user_data :: #force_inline proc "c" (wl_pointer: ^wl_pointer, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_pointer), user_data)
 }
 
-/** @ingroup iface_wl_pointer */
-wl_pointer_get_user_data :: #force_inline proc "c" (struct wl_pointer *wl_pointer) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_pointer)
+wl_pointer_get_user_data :: #force_inline proc "c" (wl_pointer: ^wl_pointer) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_pointer))
 }
 
-wl_pointer_get_version :: #force_inline proc "c" (struct wl_pointer *wl_pointer) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_pointer)
+wl_pointer_get_version :: #force_inline proc "c" (wl_pointer: ^wl_pointer) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_pointer))
 }
 
-/** @ingroup iface_wl_pointer */
-
-wl_pointer_destroy :: #force_inline proc "c" (struct wl_pointer *wl_pointer) {
-  wl_proxy_destroy((struct wl_proxy *) wl_pointer)
+wl_pointer_destroy :: #force_inline proc "c" (wl_pointer: ^wl_pointer) {
+  wl_proxy_destroy((^wl_proxy)(wl_pointer))
 }
 
-/**
- * @ingroup iface_wl_pointer
- *
- * Set the pointer surface, i.e., the surface that contains the
- * pointer image (cursor). This request gives the surface the role
- * of a cursor. If the surface already has another role, it raises
- * a protocol error.
- *
- * The cursor actually changes only if the pointer
- * focus for this device is one of the requesting client's surfaces
- * or the surface parameter is the current pointer surface. If
- * there was a previous surface set with this request it is
- * replaced. If surface is nil, the pointer image is hidden.
- *
- * The parameters hotspot_x and hotspot_y define the position of
- * the pointer surface relative to the pointer location. Its
- * top-left corner is always at (x, y) - (hotspot_x, hotspot_y),
- * where (x, y) are the coordinates of the pointer location, in
- * surface-local coordinates.
- *
- * On surface.attach requests to the pointer surface, hotspot_x
- * and hotspot_y are decremented by the x and y parameters
- * passed to the request. Attach must be confirmed by
- * wl_surface.commit as usual.
- *
- * The hotspot can also be updated by passing the currently set
- * pointer surface to this request with new values for hotspot_x
- * and hotspot_y.
- *
- * The input region is ignored for wl_surfaces with the role of
- * a cursor. When the use as a cursor ends, the wl_surface is
- * unmapped.
- *
- * The serial parameter must match the latest wl_pointer.enter
- * serial number sent to the client. Otherwise the request will be
- * ignored.
- */
 
-wl_pointer_set_cursor :: #force_inline proc "c" (struct wl_pointer *wl_pointer, uint32_t serial, struct wl_surface *surface, int32_t hotspot_x, int32_t hotspot_y) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_pointer,
-       WL_POINTER_SET_CURSOR, nil, wl_proxy_get_version((struct wl_proxy *) wl_pointer), 0, serial, surface, hotspot_x, hotspot_y)
+wl_pointer_set_cursor :: #force_inline proc "c" (wl_pointer: ^wl_pointer, serial: u32, surface: ^wl_surface, hotspot_x: i32, hotspot_y: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_pointer),
+       WL_POINTER_SET_CURSOR, nil, wl_proxy_get_version((^wl_proxy)(wl_pointer)), 0, serial, surface, hotspot_x, hotspot_y)
 }
 
-/**
- * @ingroup iface_wl_pointer
- *
- * Using this request a client can tell the server that it is not going to
- * use the pointer object anymore.
- *
- * This request destroys the pointer proxy object, so clients must not call
- * wl_pointer_destroy() after using this request.
- */
-
-wl_pointer_release :: #force_inline proc "c" (struct wl_pointer *wl_pointer) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_pointer,
-       WL_POINTER_RELEASE, nil, wl_proxy_get_version((struct wl_proxy *) wl_pointer), WL_MARSHAL_FLAG_DESTROY)
+wl_pointer_release :: #force_inline proc "c" (wl_pointer: ^wl_pointer) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_pointer),
+       WL_POINTER_RELEASE, nil, wl_proxy_get_version((^wl_proxy)(wl_pointer)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-#ifndef WL_KEYBOARD_KEYMAP_FORMAT_ENUM
-#define WL_KEYBOARD_KEYMAP_FORMAT_ENUM
-/**
- * @ingroup iface_wl_keyboard
- * keyboard mapping format
- *
- * This specifies the format of the keymap provided to the
- * client with the wl_keyboard.keymap event.
- */
-enum wl_keyboard_keymap_format {
+wl_keyboard_keymap_format :: enum {
   /**
    * no keymap; client must understand how to interpret the raw keycode
    */
@@ -2116,17 +1551,8 @@ enum wl_keyboard_keymap_format {
    */
   WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1 = 1,
 }
-#endif /* WL_KEYBOARD_KEYMAP_FORMAT_ENUM */
 
-#ifndef WL_KEYBOARD_KEY_STATE_ENUM
-#define WL_KEYBOARD_KEY_STATE_ENUM
-/**
- * @ingroup iface_wl_keyboard
- * physical key state
- *
- * Describes the physical state of a key that produced the key event.
- */
-enum wl_keyboard_key_state {
+wl_keyboard_key_state :: enum {
   /**
    * key is not pressed
    */
@@ -2136,451 +1562,100 @@ enum wl_keyboard_key_state {
    */
   WL_KEYBOARD_KEY_STATE_PRESSED = 1,
 }
-#endif /* WL_KEYBOARD_KEY_STATE_ENUM */
 
-/**
- * @ingroup iface_wl_keyboard
- * @struct wl_keyboard_listener
- */
-struct wl_keyboard_listener {
-  /**
-   * keyboard mapping
-   *
-   * This event provides a file descriptor to the client which can
-   * be memory-mapped in read-only mode to provide a keyboard mapping
-   * description.
-   *
-   * From version 7 onwards, the fd must be mapped with MAP_PRIVATE
-   * by the recipient, as MAP_SHARED may fail.
-   * @param format keymap format
-   * @param fd keymap file descriptor
-   * @param size keymap size, in bytes
-   */
-  void (*keymap)(data: rawptr,
-           struct wl_keyboard *wl_keyboard,
-           uint32_t format,
-           int32_t fd,
-           uint32_t size)
-  /**
-   * enter event
-   *
-   * Notification that this seat's keyboard focus is on a certain
-   * surface.
-   *
-   * The compositor must send the wl_keyboard.modifiers event after
-   * this event.
-   * @param serial serial number of the enter event
-   * @param surface surface gaining keyboard focus
-   * @param keys the currently pressed keys
-   */
-  void (*enter)(data: rawptr,
-          struct wl_keyboard *wl_keyboard,
-          uint32_t serial,
-          struct wl_surface *surface,
-          struct wl_array *keys)
-  /**
-   * leave event
-   *
-   * Notification that this seat's keyboard focus is no longer on a
-   * certain surface.
-   *
-   * The leave notification is sent before the enter notification for
-   * the new focus.
-   *
-   * After this event client must assume that all keys, including
-   * modifiers, are lifted and also it must stop key repeating if
-   * there's some going on.
-   * @param serial serial number of the leave event
-   * @param surface surface that lost keyboard focus
-   */
-  void (*leave)(data: rawptr,
-          struct wl_keyboard *wl_keyboard,
-          uint32_t serial,
-          struct wl_surface *surface)
-  /**
-   * key event
-   *
-   * A key was pressed or released. The time argument is a
-   * timestamp with millisecond granularity, with an undefined base.
-   *
-   * The key is a platform-specific key code that can be interpreted
-   * by feeding it to the keyboard mapping (see the keymap event).
-   *
-   * If this event produces a change in modifiers, then the resulting
-   * wl_keyboard.modifiers event must be sent after this event.
-   * @param serial serial number of the key event
-   * @param time timestamp with millisecond granularity
-   * @param key key that produced the event
-   * @param state physical state of the key
-   */
-  void (*key)(data: rawptr,
-        struct wl_keyboard *wl_keyboard,
-        uint32_t serial,
-        uint32_t time,
-        uint32_t key,
-        uint32_t state)
-  /**
-   * modifier and group state
-   *
-   * Notifies clients that the modifier and/or group state has
-   * changed, and it should update its local state.
-   * @param serial serial number of the modifiers event
-   * @param mods_depressed depressed modifiers
-   * @param mods_latched latched modifiers
-   * @param mods_locked locked modifiers
-   * @param group keyboard layout
-   */
-  void (*modifiers)(data: rawptr,
-        struct wl_keyboard *wl_keyboard,
-        uint32_t serial,
-        uint32_t mods_depressed,
-        uint32_t mods_latched,
-        uint32_t mods_locked,
-        uint32_t group)
-  /**
-   * repeat rate and delay
-   *
-   * Informs the client about the keyboard's repeat rate and delay.
-   *
-   * This event is sent as soon as the wl_keyboard object has been
-   * created, and is guaranteed to be received by the client before
-   * any key press event.
-   *
-   * Negative values for either rate or delay are illegal. A rate of
-   * zero will disable any repeating (regardless of the value of
-   * delay).
-   *
-   * This event can be sent later on as well with a new value if
-   * necessary, so clients should continue listening for the event
-   * past the creation of wl_keyboard.
-   * @param rate the rate of repeating keys in characters per second
-   * @param delay delay in milliseconds since key down until repeating starts
-   * @since 4
-   */
-  void (*repeat_info)(data: rawptr,
-          struct wl_keyboard *wl_keyboard,
-          int32_t rate,
-          int32_t delay)
+wl_keyboard_listener :: struct {
+  keymap: proc "c" (data: rawptr, wl_keyboard: ^wl_keyboard, format: u32, fd: i32, size: u32),
+  enter: proc "c" (data: rawptr, wl_keyboard: ^wl_keyboard, serial: u32, surface: ^wl_surface, keys: ^wl_array),
+  leave: proc "c" (data: rawptr, wl_keyboard: ^wl_keyboard, serial: u32, surface: ^wl_surface),
+  key: proc "c" (data: rawptr, wl_keyboard: ^wl_keyboard, serial: u32, time: u32, key: u32, state: u32),
+  modifiers: proc "c" (data: rawptr, wl_keyboard: ^wl_keyboard, serial: u32, mods_depressed: u32, mods_latched: u32, mods_locked: u32, group: u32),
+  repeate_info: proc "c" (data: rawptr, wl_keyboard: ^wl_keyboard, rate: i32, delay: i32),
 }
 
-/**
- * @ingroup iface_wl_keyboard
- */
-static inline int
-wl_keyboard_add_listener :: #force_inline proc "c" (struct wl_keyboard *wl_keyboard,
-       const struct wl_keyboard_listener *listener, data: rawptr)
-{
-  return wl_proxy_add_listener((struct wl_proxy *) wl_keyboard,
+wl_keyboard_add_listener :: #force_inline proc "c" (wl_keyboard: ^wl_keyboard,
+       listener: ^wl_keyboard_listener, data: rawptr) -> int {
+  return wl_proxy_add_listener((^wl_proxy)(wl_keyboard),
              (^^proc())(listener), data)
 }
 
-#define WL_KEYBOARD_RELEASE 0
+WL_KEYBOARD_RELEASE :: 0
+WL_KEYBOARD_KEYMAP_SINCE_VERSION :: 1
+WL_KEYBOARD_ENTER_SINCE_VERSION :: 1
+WL_KEYBOARD_LEAVE_SINCE_VERSION :: 1
+WL_KEYBOARD_KEY_SINCE_VERSION :: 1
+WL_KEYBOARD_MODIFIERS_SINCE_VERSION :: 1
+WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION :: 4
+WL_KEYBOARD_RELEASE_SINCE_VERSION :: 3
 
-/**
- * @ingroup iface_wl_keyboard
- */
-#define WL_KEYBOARD_KEYMAP_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_keyboard
- */
-#define WL_KEYBOARD_ENTER_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_keyboard
- */
-#define WL_KEYBOARD_LEAVE_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_keyboard
- */
-#define WL_KEYBOARD_KEY_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_keyboard
- */
-#define WL_KEYBOARD_MODIFIERS_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_keyboard
- */
-#define WL_KEYBOARD_REPEAT_INFO_SINCE_VERSION 4
-
-/**
- * @ingroup iface_wl_keyboard
- */
-#define WL_KEYBOARD_RELEASE_SINCE_VERSION 3
-
-/** @ingroup iface_wl_keyboard */
-
-wl_keyboard_set_user_data :: #force_inline proc "c" (struct wl_keyboard *wl_keyboard, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_keyboard, user_data)
+wl_keyboard_set_user_data :: #force_inline proc "c" (wl_keyboard: ^wl_keyboard, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_keyboard), user_data)
 }
 
-/** @ingroup iface_wl_keyboard */
-wl_keyboard_get_user_data :: #force_inline proc "c" (struct wl_keyboard *wl_keyboard) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_keyboard)
+wl_keyboard_get_user_data :: #force_inline proc "c" (wl_keyboard: ^wl_keyboard) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_keyboard))
 }
 
-wl_keyboard_get_version :: #force_inline proc "c" (struct wl_keyboard *wl_keyboard) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_keyboard)
+wl_keyboard_get_version :: #force_inline proc "c" (wl_keyboard: ^wl_keyboard) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_keyboard))
 }
 
-/** @ingroup iface_wl_keyboard */
-
-wl_keyboard_destroy :: #force_inline proc "c" (struct wl_keyboard *wl_keyboard) {
-  wl_proxy_destroy((struct wl_proxy *) wl_keyboard)
+wl_keyboard_destroy :: #force_inline proc "c" (wl_keyboard: ^wl_keyboard) {
+  wl_proxy_destroy((^wl_proxy)(wl_keyboard))
 }
 
-/**
- * @ingroup iface_wl_keyboard
- */
-
-wl_keyboard_release :: #force_inline proc "c" (struct wl_keyboard *wl_keyboard) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_keyboard,
-       WL_KEYBOARD_RELEASE, nil, wl_proxy_get_version((struct wl_proxy *) wl_keyboard), WL_MARSHAL_FLAG_DESTROY)
+wl_keyboard_release :: #force_inline proc "c" (wl_keyboard: ^wl_keyboard) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_keyboard),
+       WL_KEYBOARD_RELEASE, nil, wl_proxy_get_version((^wl_proxy)(wl_keyboard)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-/**
- * @ingroup iface_wl_touch
- * @struct wl_touch_listener
- */
-struct wl_touch_listener {
-  /**
-   * touch down event and beginning of a touch sequence
-   *
-   * A new touch point has appeared on the surface. This touch
-   * point is assigned a unique ID. Future events from this touch
-   * point reference this ID. The ID ceases to be valid after a touch
-   * up event and may be reused in the future.
-   * @param serial serial number of the touch down event
-   * @param time timestamp with millisecond granularity
-   * @param surface surface touched
-   * @param id the unique ID of this touch point
-   * @param x surface-local x coordinate
-   * @param y surface-local y coordinate
-   */
-  void (*down)(data: rawptr,
-         struct wl_touch *wl_touch,
-         uint32_t serial,
-         uint32_t time,
-         struct wl_surface *surface,
-         int32_t id,
-         wl_fixed_t x,
-         wl_fixed_t y)
-  /**
-   * end of a touch event sequence
-   *
-   * The touch point has disappeared. No further events will be
-   * sent for this touch point and the touch point's ID is released
-   * and may be reused in a future touch down event.
-   * @param serial serial number of the touch up event
-   * @param time timestamp with millisecond granularity
-   * @param id the unique ID of this touch point
-   */
-  void (*up)(data: rawptr,
-       struct wl_touch *wl_touch,
-       uint32_t serial,
-       uint32_t time,
-       int32_t id)
-  /**
-   * update of touch point coordinates
-   *
-   * A touch point has changed coordinates.
-   * @param time timestamp with millisecond granularity
-   * @param id the unique ID of this touch point
-   * @param x surface-local x coordinate
-   * @param y surface-local y coordinate
-   */
-  void (*motion)(data: rawptr,
-           struct wl_touch *wl_touch,
-           uint32_t time,
-           int32_t id,
-           wl_fixed_t x,
-           wl_fixed_t y)
-  /**
-   * end of touch frame event
-   *
-   * Indicates the end of a set of events that logically belong
-   * together. A client is expected to accumulate the data in all
-   * events within the frame before proceeding.
-   *
-   * A wl_touch.frame terminates at least one event but otherwise no
-   * guarantee is provided about the set of events within a frame. A
-   * client must assume that any state not updated in a frame is
-   * unchanged from the previously known state.
-   */
-  void (*frame)(data: rawptr,
-          struct wl_touch *wl_touch)
-  /**
-   * touch session cancelled
-   *
-   * Sent if the compositor decides the touch stream is a global
-   * gesture. No further events are sent to the clients from that
-   * particular gesture. Touch cancellation applies to all touch
-   * points currently active on this client's surface. The client is
-   * responsible for finalizing the touch points, future touch points
-   * on this surface may reuse the touch point ID.
-   */
-  void (*cancel)(data: rawptr,
-           struct wl_touch *wl_touch)
-  /**
-   * update shape of touch point
-   *
-   * Sent when a touchpoint has changed its shape.
-   *
-   * This event does not occur on its own. It is sent before a
-   * wl_touch.frame event and carries the new shape information for
-   * any previously reported, or new touch points of that frame.
-   *
-   * Other events describing the touch point such as wl_touch.down,
-   * wl_touch.motion or wl_touch.orientation may be sent within the
-   * same wl_touch.frame. A client should treat these events as a
-   * single logical touch point update. The order of wl_touch.shape,
-   * wl_touch.orientation and wl_touch.motion is not guaranteed. A
-   * wl_touch.down event is guaranteed to occur before the first
-   * wl_touch.shape event for this touch ID but both events may occur
-   * within the same wl_touch.frame.
-   *
-   * A touchpoint shape is approximated by an ellipse through the
-   * major and minor axis length. The major axis length describes the
-   * longer diameter of the ellipse, while the minor axis length
-   * describes the shorter diameter. Major and minor are orthogonal
-   * and both are specified in surface-local coordinates. The center
-   * of the ellipse is always at the touchpoint location as reported
-   * by wl_touch.down or wl_touch.move.
-   *
-   * This event is only sent by the compositor if the touch device
-   * supports shape reports. The client has to make reasonable
-   * assumptions about the shape if it did not receive this event.
-   * @param id the unique ID of this touch point
-   * @param major length of the major axis in surface-local coordinates
-   * @param minor length of the minor axis in surface-local coordinates
-   * @since 6
-   */
-  void (*shape)(data: rawptr,
-          struct wl_touch *wl_touch,
-          int32_t id,
-          wl_fixed_t major,
-          wl_fixed_t minor)
-  /**
-   * update orientation of touch point
-   *
-   * Sent when a touchpoint has changed its orientation.
-   *
-   * This event does not occur on its own. It is sent before a
-   * wl_touch.frame event and carries the new shape information for
-   * any previously reported, or new touch points of that frame.
-   *
-   * Other events describing the touch point such as wl_touch.down,
-   * wl_touch.motion or wl_touch.shape may be sent within the same
-   * wl_touch.frame. A client should treat these events as a single
-   * logical touch point update. The order of wl_touch.shape,
-   * wl_touch.orientation and wl_touch.motion is not guaranteed. A
-   * wl_touch.down event is guaranteed to occur before the first
-   * wl_touch.orientation event for this touch ID but both events may
-   * occur within the same wl_touch.frame.
-   *
-   * The orientation describes the clockwise angle of a touchpoint's
-   * major axis to the positive surface y-axis and is normalized to
-   * the -180 to +180 degree range. The granularity of orientation
-   * depends on the touch device, some devices only support binary
-   * rotation values between 0 and 90 degrees.
-   *
-   * This event is only sent by the compositor if the touch device
-   * supports orientation reports.
-   * @param id the unique ID of this touch point
-   * @param orientation angle between major axis and positive surface y-axis in degrees
-   * @since 6
-   */
-  void (*orientation)(data: rawptr,
-          struct wl_touch *wl_touch,
-          int32_t id,
-          wl_fixed_t orientation)
+wl_touch_listener :: struct {
+  down: proc "c" (data: rawptr, wl_touch: ^wl_touch, serial: u32, time: u32, surface: ^wl_surface, id: i32, x: wl_fixed_t, y: wl_fixed_t),
+  up: proc "c" (data: rawptr, wl_touch: ^wl_touch, serial: u32, time: u32, id: i32),
+  motion: proc "c" (data: rawptr, wl_touch: ^wl_touch, time: u32, id: i32, x: wl_fixed_t, y: wl_fixed_t),
+  frame: proc "c" (data: rawptr, wl_touch: ^wl_touch),
+  cancel: proc "c" (data: rawptr, wl_touch: ^wl_touch),
+  shape: proc "c" (data: rawptr, wl_touch: ^wl_touch, id: i32, major: wl_fixed_t, minor: wl_fixed_t),
+  orientation: proc "c" (data: rawptr, wl_touch: ^wl_touch, id: i32, orientation: wl_fixed_t),
 }
 
-/**
- * @ingroup iface_wl_touch
- */
-static inline int
-wl_touch_add_listener :: #force_inline proc "c" (struct wl_touch *wl_touch,
-          const struct wl_touch_listener *listener, data: rawptr)
-{
-  return wl_proxy_add_listener((struct wl_proxy *) wl_touch,
+wl_touch_add_listener :: #force_inline proc "c" (wl_touch: ^wl_touch,
+          listener: wl_touch_listener, data: rawptr) -> int {
+  return wl_proxy_add_listener((^wl_proxy)(wl_touch),
              (^^proc())(listener), data)
 }
 
-#define WL_TOUCH_RELEASE 0
+WL_TOUCH_RELEASE :: 0
+WL_TOUCH_DOWN_SINCE_VERSION :: 1
+WL_TOUCH_UP_SINCE_VERSION :: 1
+WL_TOUCH_MOTION_SINCE_VERSION :: 1
+WL_TOUCH_FRAME_SINCE_VERSION :: 1
+WL_TOUCH_CANCEL_SINCE_VERSION :: 1
+WL_TOUCH_SHAPE_SINCE_VERSION :: 6
+WL_TOUCH_ORIENTATION_SINCE_VERSION :: 6
+WL_TOUCH_RELEASE_SINCE_VERSION :: 3
 
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_DOWN_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_UP_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_MOTION_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_FRAME_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_CANCEL_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_SHAPE_SINCE_VERSION 6
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_ORIENTATION_SINCE_VERSION 6
-
-/**
- * @ingroup iface_wl_touch
- */
-#define WL_TOUCH_RELEASE_SINCE_VERSION 3
-
-/** @ingroup iface_wl_touch */
-
-wl_touch_set_user_data :: #force_inline proc "c" (struct wl_touch *wl_touch, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_touch, user_data)
+wl_touch_set_user_data :: #force_inline proc "c" (wl_touch: ^wl_touch, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_touch), user_data)
 }
 
-/** @ingroup iface_wl_touch */
-wl_touch_get_user_data :: #force_inline proc "c" (struct wl_touch *wl_touch) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_touch)
+wl_touch_get_user_data :: #force_inline proc "c" (wl_touch: ^wl_touch) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_touch))
 }
 
-wl_touch_get_version :: #force_inline proc "c" (struct wl_touch *wl_touch) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_touch)
+wl_touch_get_version :: #force_inline proc "c" (wl_touch: ^wl_touch) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_touch))
 }
 
-/** @ingroup iface_wl_touch */
-
-wl_touch_destroy :: #force_inline proc "c" (struct wl_touch *wl_touch) {
-  wl_proxy_destroy((struct wl_proxy *) wl_touch)
+wl_touch_destroy :: #force_inline proc "c" (wl_touch: ^wl_touch) {
+  wl_proxy_destroy((^wl_proxy)(wl_touch))
 }
 
-/**
- * @ingroup iface_wl_touch
- */
-
-wl_touch_release :: #force_inline proc "c" (struct wl_touch *wl_touch) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_touch,
-       WL_TOUCH_RELEASE, nil, wl_proxy_get_version((struct wl_proxy *) wl_touch), WL_MARSHAL_FLAG_DESTROY)
+wl_touch_release :: #force_inline proc "c" (wl_touch: ^wl_touch) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_touch),
+       WL_TOUCH_RELEASE, nil, wl_proxy_get_version((^wl_proxy)(wl_touch)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-#ifndef WL_OUTPUT_SUBPIXEL_ENUM
-#define WL_OUTPUT_SUBPIXEL_ENUM
-/**
- * @ingroup iface_wl_output
- * subpixel geometry information
- *
- * This enumeration describes how the physical
- * pixels on an output are laid out.
- */
-enum wl_output_subpixel {
+wl_output_subpixel :: enum {
   /**
    * unknown geometry
    */
@@ -2606,27 +1681,8 @@ enum wl_output_subpixel {
    */
   WL_OUTPUT_SUBPIXEL_VERTICAL_BGR = 5,
 }
-#endif /* WL_OUTPUT_SUBPIXEL_ENUM */
 
-#ifndef WL_OUTPUT_TRANSFORM_ENUM
-#define WL_OUTPUT_TRANSFORM_ENUM
-/**
- * @ingroup iface_wl_output
- * transform from framebuffer to output
- *
- * This describes the transform that a compositor will apply to a
- * surface to compensate for the rotation or mirroring of an
- * output device.
- *
- * The flipped values correspond to an initial flip around a
- * vertical axis followed by rotation.
- *
- * The purpose is mainly to allow clients to render accordingly and
- * tell the compositor, so that for fullscreen surfaces, the
- * compositor will still be able to scan out directly from client
- * surfaces.
- */
-enum wl_output_transform {
+wl_output_transform :: enum {
   /**
    * no transform
    */
@@ -2660,18 +1716,8 @@ enum wl_output_transform {
    */
   WL_OUTPUT_TRANSFORM_FLIPPED_270 = 7,
 }
-#endif /* WL_OUTPUT_TRANSFORM_ENUM */
 
-#ifndef WL_OUTPUT_MODE_ENUM
-#define WL_OUTPUT_MODE_ENUM
-/**
- * @ingroup iface_wl_output
- * mode information
- *
- * These flags describe properties of an output mode.
- * They are used in the flags bitfield of the mode event.
- */
-enum wl_output_mode {
+wl_output_mode :: enum {
   /**
    * indicates this is the current mode
    */
@@ -2681,310 +1727,70 @@ enum wl_output_mode {
    */
   WL_OUTPUT_MODE_PREFERRED = 0x2,
 }
-#endif /* WL_OUTPUT_MODE_ENUM */
 
-/**
- * @ingroup iface_wl_output
- * @struct wl_output_listener
- */
-struct wl_output_listener {
-  /**
-   * properties of the output
-   *
-   * The geometry event describes geometric properties of the
-   * output. The event is sent when binding to the output object and
-   * whenever any of the properties change.
-   *
-   * The physical size can be set to zero if it doesn't make sense
-   * for this output (e.g. for projectors or virtual outputs).
-   *
-   * The geometry event will be followed by a done event (starting
-   * from version 2).
-   *
-   * Note: wl_output only advertises partial information about the
-   * output position and identification. Some compositors, for
-   * instance those not implementing a desktop-style output layout or
-   * those exposing virtual outputs, might fake this information.
-   * Instead of using x and y, clients should use
-   * xdg_output.logical_position. Instead of using make and model,
-   * clients should use name and description.
-   * @param x x position within the global compositor space
-   * @param y y position within the global compositor space
-   * @param physical_width width in millimeters of the output
-   * @param physical_height height in millimeters of the output
-   * @param subpixel subpixel orientation of the output
-   * @param make textual description of the manufacturer
-   * @param model textual description of the model
-   * @param transform transform that maps framebuffer to output
-   */
-  void (*geometry)(data: rawptr,
-       struct wl_output *wl_output,
-       int32_t x,
-       int32_t y,
-       int32_t physical_width,
-       int32_t physical_height,
-       int32_t subpixel,
-       const char *make,
-       const char *model,
-       int32_t transform)
-  /**
-   * advertise available modes for the output
-   *
-   * The mode event describes an available mode for the output.
-   *
-   * The event is sent when binding to the output object and there
-   * will always be one mode, the current mode. The event is sent
-   * again if an output changes mode, for the mode that is now
-   * current. In other words, the current mode is always the last
-   * mode that was received with the current flag set.
-   *
-   * Non-current modes are deprecated. A compositor can decide to
-   * only advertise the current mode and never send other modes.
-   * Clients should not rely on non-current modes.
-   *
-   * The size of a mode is given in physical hardware units of the
-   * output device. This is not necessarily the same as the output
-   * size in the global compositor space. For instance, the output
-   * may be scaled, as described in wl_output.scale, or transformed,
-   * as described in wl_output.transform. Clients willing to retrieve
-   * the output size in the global compositor space should use
-   * xdg_output.logical_size instead.
-   *
-   * The vertical refresh rate can be set to zero if it doesn't make
-   * sense for this output (e.g. for virtual outputs).
-   *
-   * The mode event will be followed by a done event (starting from
-   * version 2).
-   *
-   * Clients should not use the refresh rate to schedule frames.
-   * Instead, they should use the wl_surface.frame event or the
-   * presentation-time protocol.
-   *
-   * Note: this information is not always meaningful for all outputs.
-   * Some compositors, such as those exposing virtual outputs, might
-   * fake the refresh rate or the size.
-   * @param flags bitfield of mode flags
-   * @param width width of the mode in hardware units
-   * @param height height of the mode in hardware units
-   * @param refresh vertical refresh rate in mHz
-   */
-  void (*mode)(data: rawptr,
-         struct wl_output *wl_output,
-         uint32_t flags,
-         int32_t width,
-         int32_t height,
-         int32_t refresh)
-  /**
-   * sent all information about output
-   *
-   * This event is sent after all other properties have been sent
-   * after binding to the output object and after any other property
-   * changes done after that. This allows changes to the output
-   * properties to be seen as atomic, even if they happen via
-   * multiple events.
-   * @since 2
-   */
-  void (*done)(data: rawptr,
-         struct wl_output *wl_output)
-  /**
-   * output scaling properties
-   *
-   * This event contains scaling geometry information that is not
-   * in the geometry event. It may be sent after binding the output
-   * object or if the output scale changes later. If it is not sent,
-   * the client should assume a scale of 1.
-   *
-   * A scale larger than 1 means that the compositor will
-   * automatically scale surface buffers by this amount when
-   * rendering. This is used for very high resolution displays where
-   * applications rendering at the native resolution would be too
-   * small to be legible.
-   *
-   * It is intended that scaling aware clients track the current
-   * output of a surface, and if it is on a scaled output it should
-   * use wl_surface.set_buffer_scale with the scale of the output.
-   * That way the compositor can avoid scaling the surface, and the
-   * client can supply a higher detail image.
-   *
-   * The scale event will be followed by a done event.
-   * @param factor scaling factor of output
-   * @since 2
-   */
-  void (*scale)(data: rawptr,
-          struct wl_output *wl_output,
-          int32_t factor)
-  /**
-   * name of this output
-   *
-   * Many compositors will assign user-friendly names to their
-   * outputs, show them to the user, allow the user to refer to an
-   * output, etc. The client may wish to know this name as well to
-   * offer the user similar behaviors.
-   *
-   * The name is a UTF-8 string with no convention defined for its
-   * contents. Each name is unique among all wl_output globals. The
-   * name is only guaranteed to be unique for the compositor
-   * instance.
-   *
-   * The same output name is used for all clients for a given
-   * wl_output global. Thus, the name can be shared across processes
-   * to refer to a specific wl_output global.
-   *
-   * The name is not guaranteed to be persistent across sessions,
-   * thus cannot be used to reliably identify an output in e.g.
-   * configuration files.
-   *
-   * Examples of names include 'HDMI-A-1', 'WL-1', 'X11-1', etc.
-   * However, do not assume that the name is a reflection of an
-   * underlying DRM connector, X11 connection, etc.
-   *
-   * The name event is sent after binding the output object. This
-   * event is only sent once per output object, and the name does not
-   * change over the lifetime of the wl_output global.
-   *
-   * Compositors may re-use the same output name if the wl_output
-   * global is destroyed and re-created later. Compositors should
-   * avoid re-using the same name if possible.
-   *
-   * The name event will be followed by a done event.
-   * @param name output name
-   * @since 4
-   */
-  void (*name)(data: rawptr,
-         struct wl_output *wl_output,
-         const char *name)
-  /**
-   * human-readable description of this output
-   *
-   * Many compositors can produce human-readable descriptions of
-   * their outputs. The client may wish to know this description as
-   * well, e.g. for output selection purposes.
-   *
-   * The description is a UTF-8 string with no convention defined for
-   * its contents. The description is not guaranteed to be unique
-   * among all wl_output globals. Examples might include 'Foocorp 11"
-   * Display' or 'Virtual X11 output via :1'.
-   *
-   * The description event is sent after binding the output object
-   * and whenever the description changes. The description is
-   * optional, and may not be sent at all.
-   *
-   * The description event will be followed by a done event.
-   * @param description output description
-   * @since 4
-   */
-  void (*description)(data: rawptr,
-          struct wl_output *wl_output,
-          const char *description)
+wl_output_listener :: struct {
+  geometry: proc "c" (data: rawptr, wl_output: ^wl_output, x: i32, y: i32, physical_width: i32, physical_height: i32, subpixel: i32, make: cstring, model: cstring, transform: i32),
+  mode: proc "c" (data: rawptr, wl_output: ^wl_output, flags: u32, width: i32, height: i32, refresh: i32),
+  done: proc "c" (data: rawptr, wl_output: ^wl_output),
+  scale: proc "c" (data: rawptr, wl_output: ^wl_output, factor: i32),
+  name: proc "c" (data: rawptr, wl_output: ^wl_output, name: cstring),
+  description: proc "c" (data: rawptr, wl_output: ^wl_output, description: cstring),
 }
 
-/**
- * @ingroup iface_wl_output
- */
-static inline int
-wl_output_add_listener :: #force_inline proc "c" (struct wl_output *wl_output,
-           const struct wl_output_listener *listener, data: rawptr)
-{
-  return wl_proxy_add_listener((struct wl_proxy *) wl_output,
+wl_output_add_listener :: #force_inline proc "c" (wl_output: ^wl_output,
+           listener: ^wl_output_listener, data: rawptr) -> int {
+  return wl_proxy_add_listener((^wl_proxy)(wl_output),
              (^^proc())(listener), data)
 }
 
-#define WL_OUTPUT_RELEASE 0
+WL_OUTPUT_RELEASE :: 0
+WL_OUTPUT_GEOMETRY_SINCE_VERSION :: 1
+WL_OUTPUT_MODE_SINCE_VERSION :: 1
+WL_OUTPUT_DONE_SINCE_VERSION :: 2
+WL_OUTPUT_SCALE_SINCE_VERSION :: 2
+WL_OUTPUT_NAME_SINCE_VERSION :: 4
+WL_OUTPUT_DESCRIPTION_SINCE_VERSION :: 4
+WL_OUTPUT_RELEASE_SINCE_VERSION :: 3
 
-/**
- * @ingroup iface_wl_output
- */
-#define WL_OUTPUT_GEOMETRY_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_output
- */
-#define WL_OUTPUT_MODE_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_output
- */
-#define WL_OUTPUT_DONE_SINCE_VERSION 2
-/**
- * @ingroup iface_wl_output
- */
-#define WL_OUTPUT_SCALE_SINCE_VERSION 2
-/**
- * @ingroup iface_wl_output
- */
-#define WL_OUTPUT_NAME_SINCE_VERSION 4
-/**
- * @ingroup iface_wl_output
- */
-#define WL_OUTPUT_DESCRIPTION_SINCE_VERSION 4
-
-/**
- * @ingroup iface_wl_output
- */
-#define WL_OUTPUT_RELEASE_SINCE_VERSION 3
-
-/** @ingroup iface_wl_output */
-
-wl_output_set_user_data :: #force_inline proc "c" (struct wl_output *wl_output, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_output, user_data)
+wl_output_set_user_data :: #force_inline proc "c" (wl_output: ^wl_output, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_output), user_data)
 }
 
-/** @ingroup iface_wl_output */
-wl_output_get_user_data :: #force_inline proc "c" (struct wl_output *wl_output) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_output)
+wl_output_get_user_data :: #force_inline proc "c" (wl_output: ^wl_output) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_output))
 }
 
-wl_output_get_version :: #force_inline proc "c" (struct wl_output *wl_output) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_output)
+wl_output_get_version :: #force_inline proc "c" (wl_output: ^wl_output) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_output))
 }
 
-/** @ingroup iface_wl_output */
-
-wl_output_destroy :: #force_inline proc "c" (struct wl_output *wl_output) {
-  wl_proxy_destroy((struct wl_proxy *) wl_output)
+wl_output_destroy :: #force_inline proc "c" (wl_output: ^wl_output) {
+  wl_proxy_destroy((^wl_proxy)(wl_output))
 }
 
-/**
- * @ingroup iface_wl_output
- *
- * Using this request a client can tell the server that it is not going to
- * use the output object anymore.
- */
-
-wl_output_release :: #force_inline proc "c" (struct wl_output *wl_output) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_output,
-       WL_OUTPUT_RELEASE, nil, wl_proxy_get_version((struct wl_proxy *) wl_output), WL_MARSHAL_FLAG_DESTROY)
+wl_output_release :: #force_inline proc "c" (wl_output: ^wl_output) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_output),
+       WL_OUTPUT_RELEASE, nil, wl_proxy_get_version((^wl_proxy)(wl_output)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-#define WL_REGION_DESTROY 0
-#define WL_REGION_ADD 1
-#define WL_REGION_SUBTRACT 2
+WL_REGION_DESTROY :: 0
+WL_REGION_ADD :: 1
+WL_REGION_SUBTRACT :: 2
+WL_REGION_DESTROY_SINCE_VERSION :: 1
+WL_REGION_ADD_SINCE_VERSION :: 1
+WL_REGION_SUBTRACT_SINCE_VERSION :: 1
 
-
-/**
- * @ingroup iface_wl_region
- */
-#define WL_REGION_DESTROY_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_region
- */
-#define WL_REGION_ADD_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_region
- */
-#define WL_REGION_SUBTRACT_SINCE_VERSION 1
-
-/** @ingroup iface_wl_region */
-
-wl_region_set_user_data :: #force_inline proc "c" (struct wl_region *wl_region, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_region, user_data)
+wl_region_set_user_data :: #force_inline proc "c" (wl_region: ^wl_region, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_region), user_data)
 }
 
 /** @ingroup iface_wl_region */
-wl_region_get_user_data :: #force_inline proc "c" (struct wl_region *wl_region) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_region)
+wl_region_get_user_data :: #force_inline proc "c" (wl_region: ^wl_region) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_region))
 }
 
-wl_region_get_version :: #force_inline proc "c" (struct wl_region *wl_region) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_region)
+wl_region_get_version :: #force_inline proc "c" (wl_region: ^wl_region) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_region))
 }
 
 /**
@@ -2993,9 +1799,9 @@ wl_region_get_version :: #force_inline proc "c" (struct wl_region *wl_region) ->
  * Destroy the region.  This will invalidate the object ID.
  */
 
-wl_region_destroy :: #force_inline proc "c" (struct wl_region *wl_region) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_region,
-       WL_REGION_DESTROY, nil, wl_proxy_get_version((struct wl_proxy *) wl_region), WL_MARSHAL_FLAG_DESTROY)
+wl_region_destroy :: #force_inline proc "c" (wl_region: ^wl_region) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_region),
+       WL_REGION_DESTROY, nil, wl_proxy_get_version((^wl_proxy)(wl_region)), WL_MARSHAL_FLAG_DESTROY)
 }
 
 /**
@@ -3004,9 +1810,9 @@ wl_region_destroy :: #force_inline proc "c" (struct wl_region *wl_region) {
  * Add the specified rectangle to the region.
  */
 
-wl_region_add :: #force_inline proc "c" (struct wl_region *wl_region, int32_t x, int32_t y, int32_t width, int32_t height) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_region,
-       WL_REGION_ADD, nil, wl_proxy_get_version((struct wl_proxy *) wl_region), 0, x, y, width, height)
+wl_region_add :: #force_inline proc "c" (wl_region: ^wl_region, x: i32, y: i32, width: i32, height: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_region),
+       WL_REGION_ADD, nil, wl_proxy_get_version((^wl_proxy)(wl_region)), 0, x, y, width, height)
 }
 
 /**
@@ -3015,14 +1821,12 @@ wl_region_add :: #force_inline proc "c" (struct wl_region *wl_region, int32_t x,
  * Subtract the specified rectangle from the region.
  */
 
-wl_region_subtract :: #force_inline proc "c" (struct wl_region *wl_region, int32_t x, int32_t y, int32_t width, int32_t height) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_region,
-       WL_REGION_SUBTRACT, nil, wl_proxy_get_version((struct wl_proxy *) wl_region), 0, x, y, width, height)
+wl_region_subtract :: #force_inline proc "c" (wl_region: ^wl_region, x: i32, y: i32, width: i32, height: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_region),
+       WL_REGION_SUBTRACT, nil, wl_proxy_get_version((^wl_proxy)(wl_region)), 0, x, y, width, height)
 }
 
-#ifndef WL_SUBCOMPOSITOR_ERROR_ENUM
-#define WL_SUBCOMPOSITOR_ERROR_ENUM
-enum wl_subcompositor_error {
+wl_subcompositor_error :: enum{
   /**
    * the to-be sub-surface is invalid
    */
@@ -3032,272 +1836,96 @@ enum wl_subcompositor_error {
    */
   WL_SUBCOMPOSITOR_ERROR_BAD_PARENT = 1,
 }
-#endif /* WL_SUBCOMPOSITOR_ERROR_ENUM */
 
-#define WL_SUBCOMPOSITOR_DESTROY 0
-#define WL_SUBCOMPOSITOR_GET_SUBSURFACE 1
+WL_SUBCOMPOSITOR_DESTROY :: 0
+WL_SUBCOMPOSITOR_GET_SUBSURFACE :: 1
+WL_SUBCOMPOSITOR_DESTROY_SINCE_VERSION :: 1
+WL_SUBCOMPOSITOR_GET_SUBSURFACE_SINCE_VERSION :: 1
 
-
-/**
- * @ingroup iface_wl_subcompositor
- */
-#define WL_SUBCOMPOSITOR_DESTROY_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_subcompositor
- */
-#define WL_SUBCOMPOSITOR_GET_SUBSURFACE_SINCE_VERSION 1
-
-/** @ingroup iface_wl_subcompositor */
-
-wl_subcompositor_set_user_data :: #force_inline proc "c" (struct wl_subcompositor *wl_subcompositor, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_subcompositor, user_data)
+wl_subcompositor_set_user_data :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_subcompositor), user_data)
 }
 
 /** @ingroup iface_wl_subcompositor */
-wl_subcompositor_get_user_data :: #force_inline proc "c" (struct wl_subcompositor *wl_subcompositor) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_subcompositor)
+wl_subcompositor_get_user_data :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_subcompositor))
 }
 
-wl_subcompositor_get_version :: #force_inline proc "c" (struct wl_subcompositor *wl_subcompositor) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_subcompositor)
+wl_subcompositor_get_version :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_subcompositor))
 }
 
-/**
- * @ingroup iface_wl_subcompositor
- *
- * Informs the server that the client will not be using this
- * protocol object anymore. This does not affect any other
- * objects, wl_subsurface objects included.
- */
-
-wl_subcompositor_destroy :: #force_inline proc "c" (struct wl_subcompositor *wl_subcompositor) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_subcompositor,
-       WL_SUBCOMPOSITOR_DESTROY, nil, wl_proxy_get_version((struct wl_proxy *) wl_subcompositor), WL_MARSHAL_FLAG_DESTROY)
+wl_subcompositor_destroy :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_subcompositor),
+       WL_SUBCOMPOSITOR_DESTROY, nil, wl_proxy_get_version((^wl_proxy)(wl_subcompositor)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-/**
- * @ingroup iface_wl_subcompositor
- *
- * Create a sub-surface interface for the given surface, and
- * associate it with the given parent surface. This turns a
- * plain wl_surface into a sub-surface.
- *
- * The to-be sub-surface must not already have another role, and it
- * must not have an existing wl_subsurface object. Otherwise the
- * bad_surface protocol error is raised.
- *
- * Adding sub-surfaces to a parent is a double-buffered operation on the
- * parent (see wl_surface.commit). The effect of adding a sub-surface
- * becomes visible on the next time the state of the parent surface is
- * applied.
- *
- * The parent surface must not be one of the child surface's descendants,
- * and the parent must be different from the child surface, otherwise the
- * bad_parent protocol error is raised.
- *
- * This request modifies the behaviour of wl_surface.commit request on
- * the sub-surface, see the documentation on wl_subsurface interface.
- */
-static inline struct wl_subsurface *
-wl_subcompositor_get_subsurface :: #force_inline proc "c" (struct wl_subcompositor *wl_subcompositor, struct wl_surface *surface, struct wl_surface *parent)
-{
-  struct wl_proxy *id
+wl_subcompositor_get_subsurface :: #force_inline proc "c" (wl_subcompositor: ^wl_subcompositorr, surface: ^wl_surface, parent: ^wl_surface) -> ^wl_subsurface {
+  id := wl_proxy_marshal_flags((^wl_proxy)(wl_subcompositor),
+       WL_SUBCOMPOSITOR_GET_SUBSURFACE, &wl_subsurface_interface, wl_proxy_get_version((^wl_proxy)(wl_subcompositor)), 0, nil, surface, parent)
 
-  id = wl_proxy_marshal_flags((struct wl_proxy *) wl_subcompositor,
-       WL_SUBCOMPOSITOR_GET_SUBSURFACE, &wl_subsurface_interface, wl_proxy_get_version((struct wl_proxy *) wl_subcompositor), 0, nil, surface, parent)
-
-  return (struct wl_subsurface *) id
+  return (^wl_subsurface)(id)
 }
 
-#ifndef WL_SUBSURFACE_ERROR_ENUM
-#define WL_SUBSURFACE_ERROR_ENUM
-enum wl_subsurface_error {
+wl_subsurface_error :: enum{
   /**
    * wl_surface is not a sibling or the parent
    */
   WL_SUBSURFACE_ERROR_BAD_SURFACE = 0,
 }
-#endif /* WL_SUBSURFACE_ERROR_ENUM */
 
-#define WL_SUBSURFACE_DESTROY 0
-#define WL_SUBSURFACE_SET_POSITION 1
-#define WL_SUBSURFACE_PLACE_ABOVE 2
-#define WL_SUBSURFACE_PLACE_BELOW 3
-#define WL_SUBSURFACE_SET_SYNC 4
-#define WL_SUBSURFACE_SET_DESYNC 5
+WL_SUBSURFACE_DESTROY :: 0
+WL_SUBSURFACE_SET_POSITION :: 1
+WL_SUBSURFACE_PLACE_ABOVE :: 2
+WL_SUBSURFACE_PLACE_BELOW :: 3
+WL_SUBSURFACE_SET_SYNC :: 4
+WL_SUBSURFACE_SET_DESYNC :: 5
+WL_SUBSURFACE_DESTROY_SINCE_VERSION :: 1
+WL_SUBSURFACE_SET_POSITION_SINCE_VERSION :: 1
+WL_SUBSURFACE_PLACE_ABOVE_SINCE_VERSION :: 1
+WL_SUBSURFACE_PLACE_BELOW_SINCE_VERSION :: 1
+WL_SUBSURFACE_SET_SYNC_SINCE_VERSION :: 1
+WL_SUBSURFACE_SET_DESYNC_SINCE_VERSION :: 1
 
-
-/**
- * @ingroup iface_wl_subsurface
- */
-#define WL_SUBSURFACE_DESTROY_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_subsurface
- */
-#define WL_SUBSURFACE_SET_POSITION_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_subsurface
- */
-#define WL_SUBSURFACE_PLACE_ABOVE_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_subsurface
- */
-#define WL_SUBSURFACE_PLACE_BELOW_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_subsurface
- */
-#define WL_SUBSURFACE_SET_SYNC_SINCE_VERSION 1
-/**
- * @ingroup iface_wl_subsurface
- */
-#define WL_SUBSURFACE_SET_DESYNC_SINCE_VERSION 1
-
-/** @ingroup iface_wl_subsurface */
-
-wl_subsurface_set_user_data :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface, user_data: rawptr) {
-  wl_proxy_set_user_data((struct wl_proxy *) wl_subsurface, user_data)
+wl_subsurface_set_user_data :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface, user_data: rawptr) {
+  wl_proxy_set_user_data((^wl_proxy)(wl_subsurface), user_data)
 }
 
-/** @ingroup iface_wl_subsurface */
-wl_subsurface_get_user_data :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface) -> rawptr {
-  return wl_proxy_get_user_data((struct wl_proxy *) wl_subsurface)
+wl_subsurface_get_user_data :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface) -> rawptr {
+  return wl_proxy_get_user_data((^wl_proxy)(wl_subsurface))
 }
 
-wl_subsurface_get_version :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface) -> u32 {
-  return wl_proxy_get_version((struct wl_proxy *) wl_subsurface)
+wl_subsurface_get_version :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface) -> u32 {
+  return wl_proxy_get_version((^wl_proxy)(wl_subsurface))
 }
 
-/**
- * @ingroup iface_wl_subsurface
- *
- * The sub-surface interface is removed from the wl_surface object
- * that was turned into a sub-surface with a
- * wl_subcompositor.get_subsurface request. The wl_surface's association
- * to the parent is deleted. The wl_surface is unmapped immediately.
- */
-
-wl_subsurface_destroy :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_subsurface,
-       WL_SUBSURFACE_DESTROY, nil, wl_proxy_get_version((struct wl_proxy *) wl_subsurface), WL_MARSHAL_FLAG_DESTROY)
+wl_subsurface_destroy :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_subsurface),
+       WL_SUBSURFACE_DESTROY, nil, wl_proxy_get_version((^wl_proxy)(wl_subsurface)), WL_MARSHAL_FLAG_DESTROY)
 }
 
-/**
- * @ingroup iface_wl_subsurface
- *
- * This schedules a sub-surface position change.
- * The sub-surface will be moved so that its origin (top left
- * corner pixel) will be at the location x, y of the parent surface
- * coordinate system. The coordinates are not restricted to the parent
- * surface area. Negative values are allowed.
- *
- * The scheduled coordinates will take effect whenever the state of the
- * parent surface is applied. When this happens depends on whether the
- * parent surface is in synchronized mode or not. See
- * wl_subsurface.set_sync and wl_subsurface.set_desync for details.
- *
- * If more than one set_position request is invoked by the client before
- * the commit of the parent surface, the position of a new request always
- * replaces the scheduled position from any previous request.
- *
- * The initial position is 0, 0.
- */
-
-wl_subsurface_set_position :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface, int32_t x, int32_t y) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_subsurface,
-       WL_SUBSURFACE_SET_POSITION, nil, wl_proxy_get_version((struct wl_proxy *) wl_subsurface), 0, x, y)
+wl_subsurface_set_position :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface, x: i32, y: i32) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_subsurface),
+       WL_SUBSURFACE_SET_POSITION, nil, wl_proxy_get_version((^wl_proxy)(wl_subsurface)), 0, x, y)
 }
 
-/**
- * @ingroup iface_wl_subsurface
- *
- * This sub-surface is taken from the stack, and put back just
- * above the reference surface, changing the z-order of the sub-surfaces.
- * The reference surface must be one of the sibling surfaces, or the
- * parent surface. Using any other surface, including this sub-surface,
- * will cause a protocol error.
- *
- * The z-order is double-buffered. Requests are handled in order and
- * applied immediately to a pending state. The final pending state is
- * copied to the active state the next time the state of the parent
- * surface is applied. When this happens depends on whether the parent
- * surface is in synchronized mode or not. See wl_subsurface.set_sync and
- * wl_subsurface.set_desync for details.
- *
- * A new sub-surface is initially added as the top-most in the stack
- * of its siblings and parent.
- */
-
-wl_subsurface_place_above :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface, struct wl_surface *sibling) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_subsurface,
-       WL_SUBSURFACE_PLACE_ABOVE, nil, wl_proxy_get_version((struct wl_proxy *) wl_subsurface), 0, sibling)
+wl_subsurface_place_above :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface, sibling: ^wl_surface) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_subsurface),
+       WL_SUBSURFACE_PLACE_ABOVE, nil, wl_proxy_get_version((^wl_proxy)(wl_subsurface)), 0, sibling)
 }
 
-/**
- * @ingroup iface_wl_subsurface
- *
- * The sub-surface is placed just below the reference surface.
- * See wl_subsurface.place_above.
- */
-
-wl_subsurface_place_below :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface, struct wl_surface *sibling) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_subsurface,
-       WL_SUBSURFACE_PLACE_BELOW, nil, wl_proxy_get_version((struct wl_proxy *) wl_subsurface), 0, sibling)
+wl_subsurface_place_below :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface, sibling: ^wl_surface) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_subsurface),
+       WL_SUBSURFACE_PLACE_BELOW, nil, wl_proxy_get_version((^wl_proxy)(wl_subsurface)), 0, sibling)
 }
 
-/**
- * @ingroup iface_wl_subsurface
- *
- * Change the commit behaviour of the sub-surface to synchronized
- * mode, also described as the parent dependent mode.
- *
- * In synchronized mode, wl_surface.commit on a sub-surface will
- * accumulate the committed state in a cache, but the state will
- * not be applied and hence will not change the compositor output.
- * The cached state is applied to the sub-surface immediately after
- * the parent surface's state is applied. This ensures atomic
- * updates of the parent and all its synchronized sub-surfaces.
- * Applying the cached state will invalidate the cache, so further
- * parent surface commits do not (re-)apply old state.
- *
- * See wl_subsurface for the recursive effect of this mode.
- */
-
-wl_subsurface_set_sync :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_subsurface,
-       WL_SUBSURFACE_SET_SYNC, nil, wl_proxy_get_version((struct wl_proxy *) wl_subsurface), 0)
+wl_subsurface_set_sync :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_subsurface),
+       WL_SUBSURFACE_SET_SYNC, nil, wl_proxy_get_version((^wl_proxy)(wl_subsurface)), 0)
 }
 
-/**
- * @ingroup iface_wl_subsurface
- *
- * Change the commit behaviour of the sub-surface to desynchronized
- * mode, also described as independent or freely running mode.
- *
- * In desynchronized mode, wl_surface.commit on a sub-surface will
- * apply the pending state directly, without caching, as happens
- * normally with a wl_surface. Calling wl_surface.commit on the
- * parent surface has no effect on the sub-surface's wl_surface
- * state. This mode allows a sub-surface to be updated on its own.
- *
- * If cached state exists when wl_surface.commit is called in
- * desynchronized mode, the pending state is added to the cached
- * state, and applied as a whole. This invalidates the cache.
- *
- * Note: even if a sub-surface is set to desynchronized, a parent
- * sub-surface may override it to behave as synchronized. For details,
- * see wl_subsurface.
- *
- * If a surface's parent surface behaves as desynchronized, then
- * the cached state is applied on set_desync.
- */
 
-wl_subsurface_set_desync :: #force_inline proc "c" (struct wl_subsurface *wl_subsurface) {
-  wl_proxy_marshal_flags((struct wl_proxy *) wl_subsurface,
-       WL_SUBSURFACE_SET_DESYNC, nil, wl_proxy_get_version((struct wl_proxy *) wl_subsurface), 0)
+wl_subsurface_set_desync :: #force_inline proc "c" (wl_subsurface: ^wl_subsurface) {
+  wl_proxy_marshal_flags((^wl_proxy)(wl_subsurface),
+       WL_SUBSURFACE_SET_DESYNC, nil, wl_proxy_get_version((^wl_proxy)(wl_subsurface)), 0)
 }
-
-#ifdef  __cplusplus
-}
-#endif
-
-#endif
