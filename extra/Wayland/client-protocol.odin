@@ -1,3 +1,4 @@
+//+build linux, freebsd, openbsd
 package wayland
 
 wl_buffer :: struct {}

@@ -1,3 +1,4 @@
+//+build linux, freebsd, openbsd
 package wayland
 
 WAYLAND_VERSION_MAJOR :: 1

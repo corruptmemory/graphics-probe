@@ -1,3 +1,4 @@
+//+build linux, freebsd, openbsd
 package wayland
 
 WL_EGL_PLATFORM :: 1

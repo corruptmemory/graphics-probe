@@ -1,3 +1,4 @@
+//+build linux, freebsd, openbsd
 package wayland
 
 import dl "core:dynlib"
@@ -80,8 +81,6 @@ wl_proxy_get_tag: proc "c" (proxy: ^wl_proxy) -> cstring
 
 wl_proxy_get_class: proc "c" (proxy: ^wl_proxy) -> cstring
 
-wl_proxy_get_display: proc "c" (proxy: ^wl_proxy) -> ^wl_display
-
 wl_proxy_set_queue: proc "c" (proxy: ^wl_proxy, queue: ^wl_event_queue)
 
 wl_display_connect: proc "c" (name: cstring) -> ^wl_display
@@ -152,7 +151,6 @@ wayland_core_protocol_init :: proc() {
   wayland_core_protocol_load_sym(&wl_proxy_set_tag, "wl_proxy_set_tag")
   wayland_core_protocol_load_sym(&wl_proxy_get_tag, "wl_proxy_get_tag")
   wayland_core_protocol_load_sym(&wl_proxy_get_class, "wl_proxy_get_class")
-  wayland_core_protocol_load_sym(&wl_proxy_get_display, "wl_proxy_get_display")
   wayland_core_protocol_load_sym(&wl_proxy_set_queue, "wl_proxy_set_queue")
   wayland_core_protocol_load_sym(&wl_display_connect, "wl_display_connect")
   wayland_core_protocol_load_sym(&wl_display_connect_to_fd, "wl_display_connect_to_fd")
@@ -176,14 +174,11 @@ wayland_core_protocol_init :: proc() {
 }
 
 @(private)
-wayland_core_protocol_load_sym :: proc(p: rawptr, name: cstring) {
-  n := string(name)
-  rp: rawptr
-  found: bool
-  rp, found = dl.symbol_address(waylandLib, n)
+wayland_core_protocol_load_sym :: proc(p: rawptr, name: string) {
+  rp, found := dl.symbol_address(waylandLib, name)
 
   if !found {
-  log.errorf("error looking up: %s", n)
+    log.errorf("error looking up: %s", name)
   }
   (cast(^rawptr)p)^ = rp
 }
