@@ -131,8 +131,8 @@ fi
 
 if [ "$tst" = true ]; then
     echo "Testing..."
-    ~/projects/Odin/odin test tests/extra/Wayland -debug -define:GL_DEBUG=false -collection:extra=/home/jim/projects/graphics-probe/extra
-    ~/projects/Odin/odin test tests/extra/xlib -debug -define:GL_DEBUG=false -collection:extra=/home/jim/projects/graphics-probe/extra
+    ~/projects/Odin/odin test tests/extra/Wayland -debug -define:GL_DEBUG=false -collection:extra=/home/jim/projects/graphics-probe/extra && rm Wayland
+    ~/projects/Odin/odin test tests/extra/xlib -debug -define:GL_DEBUG=false -collection:extra=/home/jim/projects/graphics-probe/extra && rm xlib
 fi
 
 

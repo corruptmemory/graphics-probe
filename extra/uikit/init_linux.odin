@@ -1,3 +1,4 @@
+//+build linux, freebsd, openbsd
 package uikit
 
 import os "core:os"

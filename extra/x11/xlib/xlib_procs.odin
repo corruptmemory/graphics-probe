@@ -3,7 +3,7 @@ package xlib
 
 /* ----  X11/Xlib.h ---------------------------------------------------------*/
 
-_Xdebug: i32
+_Xdebug: ^i32
 // Free data allocated by Xlib
 XFree              : proc "c" (ptr: rawptr)
 // Opening/closing a display
@@ -53,8 +53,8 @@ XDisplayHeightMM   : proc "c" (display: ^Display, screen_no: i32) -> i32
 XDisplayWidth      : proc "c" (display: ^Display, screen_no: i32) -> i32
 XDisplayWidthMM    : proc "c" (display: ^Display, screen_no: i32) -> i32
 // Screen macros
-XBlackPixelsOfScreen : proc "c" (screen: ^Screen) -> uint
-XWhitePixelsOfScreen : proc "c" (screen: ^Screen) -> uint
+XBlackPixelOfScreen : proc "c" (screen: ^Screen) -> uint
+XWhitePixelOfScreen : proc "c" (screen: ^Screen) -> uint
 XCellsOfScreen       : proc "c" (screen: ^Screen) -> i32
 XDefaultColormapOfScreen : proc "c" (screen: ^Screen) -> Colormap
 XDefaultDepthOfScreen    : proc "c" (screen: ^Screen) -> i32
@@ -63,7 +63,7 @@ XDefaultVisualOfScreen   : proc "c" (screen: ^Screen) -> ^Visual
 XDoesBackingStore    : proc "c" (screen: ^Screen) -> BackingStore
 XDoesSaveUnders      : proc "c" (screen: ^Screen) -> b32
 XDisplayOfScreen     : proc "c" (screen: ^Screen) -> ^Display
-XScreenNumberOfScreens : proc "c" (screen: ^Screen) -> i32
+XScreenNumberOfScreen : proc "c" (screen: ^Screen) -> i32
 XEventMaskOfScreen   : proc "c" (screen: ^Screen) -> EventMask
 XWidthOfScreen       : proc "c" (screen: ^Screen) -> i32
 XHeightOfScreen      : proc "c" (screen: ^Screen) -> i32
@@ -88,7 +88,7 @@ XRemoveConnectionWatch : proc "c" (
 	procedure: XConnectionWatchProc,
 	data:      rawptr,
 	) -> Status
-XProcessInternalConnections : proc "c" (
+XProcessInternalConnection : proc "c" (
 	display:   ^Display,
 	fd:        i32,
 	)
@@ -184,7 +184,7 @@ XSetWindowBackground : proc "c" (
 	window:    Window,
 	pixel:     uint,
 	)
-XSetWindowBackgroundMap : proc "c" (
+XSetWindowBackgroundPixmap : proc "c" (
 	display:   ^Display,
 	window:    Window,
 	pixmap:    Pixmap,
@@ -797,7 +797,7 @@ XGetGCValues : proc "c" (
 	values:   ^XGCValues,
 	) -> Status
 XFreeGC : proc "c" (display: ^Display, gc: GC)
-XGCContextFromGC : proc "c" (gc: GC) -> GContext
+XGContextFromGC : proc "c" (gc: GC) -> GContext
 XFlushGC : proc "c" (display: ^Display, gc: GC)
 // Convenience routines for GC
 XSetState : proc "c" (
@@ -870,7 +870,7 @@ XQueryBestTile : proc "c" (
 	out_width:  ^u32,
 	out_height: ^u32,
 	) -> Status
-XQueryBestStripple : proc "c" (
+XQueryBestStipple : proc "c" (
 	display:    ^Display,
 	which:      Drawable,
 	width:      u32,
@@ -879,7 +879,7 @@ XQueryBestStripple : proc "c" (
 	out_height: u32,
 	) -> Status
 XSetTile       : proc "c" (display: ^Display, gc: GC, tile: Pixmap)
-XSetStripple   : proc "c" (display: ^Display, gc: GC, stripple: Pixmap)
+XSetStipple   : proc "c" (display: ^Display, gc: GC, stripple: Pixmap)
 XSetTSOrigin   : proc "c" (display: ^Display, gc: GC, x: i32, y: i32)
 XSetFont       : proc "c" (display: ^Display, gc: GC, font: Font)
 XSetClipOrigin : proc "c" (display: ^Display, gc: GC, x: i32, y: i32)
@@ -1790,7 +1790,7 @@ XRebindKeysym : proc "c" (
 	num_bytes: i32,
 	)
 // Allocating permanent storage
-XPermalloc : proc "c" (size: u32) -> rawptr
+Xpermalloc : proc "c" (size: u32) -> rawptr
 // Parsing the window geometry
 XParseGeometry : proc "c" (
 	parsestring: cstring,

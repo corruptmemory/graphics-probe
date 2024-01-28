@@ -2,3 +2,6 @@
 ols.json
 *.code-workspace
 *.sublime-*
+Wayland
+xlib
+color-wheel.bin
