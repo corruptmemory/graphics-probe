@@ -2,9 +2,12 @@ package x11
 
 import "extra:x11/xlib"
 
-display: ^xlib.Display
-screen: i32
-root_window: xlib.Window
+Instance :: struct {
+  display: ^xlib.Display,
+  screen: i32,
+  root_window: xlib.Window,
+}
+
 
 Window :: struct {
   window: xlib.Window,
@@ -14,11 +17,23 @@ Window :: struct {
 
 
 create_window :: proc(
+  instance: Instance,
   x:         i32,
   y:         i32,
   width:     u32,
   height:    u32,
-  bordersz:  u32,)
+  bordersz:  u32) -> ^Window {
+  result := new(Window)
+  result.window = xlib.XCreateSimpleWindow(
+    instance.display,
+    instance.root_window,
+    x, y, width, height, bordersz,
+    int(xlib.XBlackPixel(instance.display, instance.screen)),
+    int(xlib.XWhitePixel(instance.display, instance.screen)))
+  result.parent = instance.root_window
+
+  return result
+}
 
 // #include <X11/Xlib.h>
 // #include <stdio.h>
