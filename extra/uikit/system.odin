@@ -1,4 +1,4 @@
 package uikit
 
-Instance :: ^struct{}
+Instance :: distinct ^struct{}
 
